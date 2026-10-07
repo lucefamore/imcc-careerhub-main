@@ -2186,6 +2186,23 @@ function showMatchReason(event, button, reason) {
     reasonElement.hidden = !reasonElement.hidden;
 }
 
+async function getCareerAiAuth() {
+    const headers = { 'Content-Type': 'application/json' };
+    let profile = {};
+    try {
+        if (window.supabaseClient) {
+            const { data } = await window.supabaseClient.auth.getSession();
+            if (data && data.session && data.session.access_token) {
+                headers['Authorization'] = 'Bearer ' + data.session.access_token;
+                const stored = JSON.parse(localStorage.getItem('imcc_user') || 'null');
+                const p = stored && stored.profile ? stored.profile : {};
+                profile = { course: p.course || '', skills: p.skills || '' };
+            }
+        }
+    } catch (e) { /* anonymous request */ }
+    return { headers: headers, profile: profile };
+}
+
 function askCareerAI() {
     const prompt = document.getElementById('aiPrompt');
     const text = prompt ? prompt.value.trim() : '';
@@ -2210,7 +2227,7 @@ function askCareerAI() {
         });
     }).filter(function(job) {
         return job.title && job.company;
-    }).slice(0, 30);
+    }).slice(0, 80);
 
     result.classList.remove('recommendation-warning');
     result.style.display = 'block';
@@ -2220,11 +2237,13 @@ function askCareerAI() {
         sendButton.textContent = 'Thinking...';
     }
 
-    fetch('/api/career-agent', {
+    getCareerAiAuth().then(function(auth) {
+    return fetch('/api/career-agent', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: auth.headers,
         body: JSON.stringify({
             prompt: text,
+            profile: auth.profile,
             jobs: jobs.map(function(job) {
                 return {
                     title: job.title,
@@ -2236,6 +2255,7 @@ function askCareerAI() {
                 };
             })
         })
+    });
     }).then(async function(response) {
         const data = await response.json().catch(function() { return {}; });
         if (!response.ok) throw new Error(data.error || 'Career AI is temporarily unavailable.');
