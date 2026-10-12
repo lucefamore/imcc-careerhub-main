@@ -2196,7 +2196,11 @@ async function getCareerAiAuth() {
                 headers['Authorization'] = 'Bearer ' + data.session.access_token;
                 const stored = JSON.parse(localStorage.getItem('imcc_user') || 'null');
                 const p = stored && stored.profile ? stored.profile : {};
-                profile = { course: p.course || '', skills: p.skills || '' };
+                profile = {
+                    course: p.course || '',
+                    skills: p.skills || '',
+                    experienceSummary: p.experienceSummary || ''
+                };
             }
         }
     } catch (e) { /* anonymous request */ }
@@ -2545,5 +2549,6 @@ function recommendJob() {
 
 </script>
 
+<script src="flowise-widget.js" defer></script>
 </body>
 </html>
