@@ -5,7 +5,7 @@
   "description": "IMCC Careers Job Marketplace",
   "scripts": {
     "build": "node build.js",
-    "dev": "npx serve .",
-    "start": "npx serve ."
+    "dev": "npx vercel dev",
+    "start": "npx vercel dev"
   }
 }
