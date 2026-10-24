@@ -2666,9 +2666,12 @@ async function requestProfileFeedback() {
 
         renderProfileFeedbackList('profileFeedbackStrengths', 'Strengths', Array.isArray(data.strengths) ? data.strengths : []);
         renderProfileFeedbackList('profileFeedbackImprovements', 'Areas to improve', Array.isArray(data.improvements) ? data.improvements : []);
-        document.getElementById('profileFeedbackSummary').textContent = data.rewrittenSummary || '';
-        document.getElementById('saveProfileSummaryButton').disabled = !data.rewrittenSummary;
-        status.textContent = 'Feedback is only saved to your profile if you choose “Save rewritten summary”.';
+        const rewrittenSummary = typeof data.rewrittenSummary === 'string' ? data.rewrittenSummary.trim() : '';
+        document.getElementById('profileFeedbackSummary').textContent = rewrittenSummary;
+        document.getElementById('saveProfileSummaryButton').disabled = !rewrittenSummary;
+        status.textContent = rewrittenSummary
+            ? 'Feedback is only saved to your profile if you choose “Save rewritten summary”.'
+            : 'Feedback loaded, but a rewritten summary was not returned. Please try again.';
     } catch (error) {
         status.textContent = error.message || 'Profile feedback is unavailable. Please try again.';
     } finally {
