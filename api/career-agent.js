@@ -224,7 +224,7 @@ async function generateModeResponse(mode, body, signal) {
     input = { profile: { course: clip(profile.course, 120), skills: clip(profile.skills, 600), experienceSummary: clip(profile.experienceSummary, 600) },
       job: { title: clip(job.title, 140), company: clip(job.company, 120), category: clip(job.category, 60), description: clip(job.description, 1200) } };
   } else if (mode === 'profile-feedback') {
-    instruction = 'Return JSON with keys strengths (array of 3 short strings) and improvements (array of 3 practical short strings). Be constructive, specific, and do not invent qualifications. This is career profile feedback, not a hiring decision.';
+    instruction = 'Return valid JSON with keys strengths (array of 3 short strings), improvements (array of 3 practical short strings), and rewrittenSummary (string). Rewrite the supplied experience summary as a polished, concise professional profile summary in 2-4 sentences. Use only facts from the supplied course, skills, and experience summary; do not invent employment, credentials, achievements, or years of experience. If the original summary is empty, create a brief objective based only on the supplied course and skills and use cautious wording. Be constructive and do not make hiring decisions.';
     input = { course: clip(body.course, 120), skills: clip(body.skills, 600), experience_summary: clip(body.experience_summary, 800) };
   } else if (mode === 'interview' && body.step === 'start') {
     instruction = 'Return JSON with key questions: exactly 5 distinct, realistic interview questions tailored to the role and company. Do not include answers.';
@@ -269,7 +269,16 @@ async function generateModeResponse(mode, body, signal) {
   }
   const content = payload && payload.choices && payload.choices[0] && payload.choices[0].message && payload.choices[0].message.content;
   let parsed;
-  try { parsed = JSON.parse(content || '{}'); } catch (_) { throw new Error('AI returned invalid structured output.'); }
+  try {
+    parsed = JSON.parse(content || '{}');
+  } catch (_) {
+    const err = new Error('AI returned invalid structured output.');
+    err.body = String(content || '').slice(0, 250);
+    throw err;
+  }
+  if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+    throw new Error('AI returned an unexpected structured output.');
+  }
 
   if (mode === 'skills-gap') return {
     answer: clip(parsed.answer, 900),
@@ -278,7 +287,8 @@ async function generateModeResponse(mode, body, signal) {
   };
   if (mode === 'profile-feedback') return {
     strengths: clipList(parsed.strengths, 220, 4),
-    improvements: clipList(parsed.improvements, 220, 4)
+    improvements: clipList(parsed.improvements, 220, 4),
+    rewrittenSummary: clip(parsed.rewrittenSummary, 900)
   };
   if (mode === 'interview' && body.step === 'start') {
     const questions = clipList(parsed.questions, 350, 5);
