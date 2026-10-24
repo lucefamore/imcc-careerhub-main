@@ -2595,10 +2595,20 @@ async function getCareerAiAuth() {
     let authenticated = false;
     try {
         if (window.supabaseClient) {
-            const { data } = await window.supabaseClient.auth.getSession();
-            if (data && data.session && data.session.access_token && isInstitutionalEmail(data.session.user && data.session.user.email)) {
+            const { data, error } = await window.supabaseClient.auth.getSession();
+            const session = data && data.session;
+            const token = session && session.access_token;
+            const institutional = session && isInstitutionalEmail(session.user && session.user.email);
+
+            // Vercel rejects oversized request headers before the API handler runs.
+            // Normal Supabase access tokens are much smaller than this safety limit.
+            // Never send an unexpectedly large token in an HTTP header.
+            const MAX_AUTH_TOKEN_LENGTH = 6000;
+            if (error) {
+                console.warn('Career AI could not read the Supabase session:', error.message);
+            } else if (token && institutional && token.length <= MAX_AUTH_TOKEN_LENGTH) {
                 authenticated = true;
-                headers['Authorization'] = 'Bearer ' + data.session.access_token;
+                headers['Authorization'] = 'Bearer ' + token;
                 const stored = JSON.parse(localStorage.getItem('imcc_user') || 'null');
                 const p = stored && stored.profile ? stored.profile : {};
                 profile = {
@@ -2606,9 +2616,13 @@ async function getCareerAiAuth() {
                     skills: p.skills || '',
                     experienceSummary: p.experienceSummary || ''
                 };
+            } else if (token && institutional && token.length > MAX_AUTH_TOKEN_LENGTH) {
+                console.warn('Career AI omitted an oversized Supabase access token. Please sign out and sign in again.');
             }
         }
-    } catch (e) { /* anonymous request */ }
+    } catch (e) {
+        console.warn('Career AI session check failed; continuing without authentication.', e && e.message);
+    }
     return { headers: headers, profile: profile, authenticated: authenticated };
 }
 
@@ -2652,6 +2666,7 @@ async function requestProfileFeedback() {
     button.disabled = true;
     try {
         const response = await fetch('/api/career-agent', {
+            credentials: 'omit',
             method: 'POST',
             headers: auth.headers,
             body: JSON.stringify({
@@ -2807,6 +2822,7 @@ async function checkJobReadiness(job, card) {
 
     try {
         const response = await fetch('/api/career-agent', {
+            credentials: 'omit',
             method: 'POST',
             headers: auth.headers,
             body: JSON.stringify({
@@ -2945,6 +2961,7 @@ function askCareerAI() {
     getCareerAiAuth().then(function(auth) {
     fallbackProfile = auth.profile;
     return fetch('/api/career-agent', {
+        credentials: 'omit',
         method: 'POST',
         headers: auth.headers,
         body: JSON.stringify({
@@ -3083,6 +3100,7 @@ async function startInterviewPractice(job, trigger) {
 
     try {
         const response = await fetch('/api/career-agent', {
+            credentials: 'omit',
             method: 'POST',
             headers: auth.headers,
             body: JSON.stringify({
@@ -3173,6 +3191,7 @@ async function submitInterviewAnswer() {
     submit.disabled = true;
     try {
         const response = await fetch('/api/career-agent', {
+            credentials: 'omit',
             method: 'POST',
             headers: interviewPracticeState.headers,
             body: JSON.stringify({
@@ -3282,6 +3301,7 @@ async function requestCoverLetterDraft() {
 
     try {
         const response = await fetch('/api/career-agent', {
+            credentials: 'omit',
             method: 'POST',
             headers: state.headers,
             body: JSON.stringify({
