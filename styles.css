@@ -994,14 +994,6 @@ footer p {
 .application-track-btn { flex: 1; min-width: 0; margin-top: 0; padding: 10px 8px; border: 1px solid var(--primary); border-radius: 8px; background: var(--white); color: var(--primary-dark); font-size: 12px; font-weight: 700; cursor: pointer; }
 .application-track-btn:hover { background: var(--secondary); }
 .application-track-btn:disabled { cursor: wait; opacity: 0.7; }
-.interview-practice-btn { flex: 1; min-width: 0; margin-top: 0; padding: 10px 8px; border: 1px solid var(--primary); border-radius: 8px; background: var(--white); color: var(--primary-dark); font-size: 12px; font-weight: 700; cursor: pointer; }
-.interview-practice-btn:hover { background: var(--secondary); }
-.interview-practice-btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
-.interview-practice-btn:disabled { cursor: wait; opacity: 0.7; }
-.cover-letter-btn { border: 1px solid var(--primary); border-radius: 8px; background: var(--white); color: var(--primary-dark); font-weight: 700; cursor: pointer; }
-.cover-letter-btn:hover { background: var(--secondary); }
-.cover-letter-btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
-.cover-letter-btn:disabled { cursor: wait; opacity: 0.7; }
 .profile-feedback-card { margin-top: 16px; padding: 14px; border: 1px solid var(--border); border-radius: 10px; background: var(--white); text-align: left; }
 .profile-feedback-card h4 { margin-bottom: 10px; color: var(--primary-dark); }
 .profile-feedback-card h5 { margin: 10px 0 4px; color: var(--text); }
@@ -1533,14 +1525,8 @@ nav {
 .apply-btn { margin-top: 12px; border-radius: 8px; }
 .job-card .job-description { max-height: 0; opacity: 0; transform: none; }
 .job-card.is-open .job-description { max-height: 200px; opacity: 1; }
-.job-card.is-open.has-skills-gap .job-description { max-height: 900px; }
 .job-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-.job-card-actions .apply-btn, .job-card-actions .application-track-btn, .job-card-actions .readiness-btn, .job-card-actions .interview-practice-btn, .job-card-actions .cover-letter-btn { flex: 1 1 140px; width: auto; min-width: 0; margin-top: 0; padding: 10px 8px; font-size: 12px; }
-.readiness-btn { border: 1px solid var(--primary); border-radius: 8px; background: var(--white); color: var(--primary-dark); font-weight: 700; cursor: pointer; }
-.readiness-btn:hover { background: var(--secondary); }
-.readiness-btn:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
-.readiness-btn:disabled { cursor: wait; opacity: 0.7; }
-.skills-gap-result { margin-top: 12px; color: var(--text); font-size: 12px; line-height: 1.6; white-space: pre-wrap; }
+.job-card-actions .apply-btn, .job-card-actions .application-track-btn { flex: 1 1 140px; width: auto; min-width: 0; margin-top: 0; padding: 10px 8px; font-size: 12px; }
 .interview-modal { z-index: 270; }
 .interview-card { width: min(620px, 100%); }
 .interview-question-panel { display: grid; gap: 10px; margin-top: 20px; }
@@ -1889,14 +1875,3 @@ nav {
         font-size: 12px;
     }
 }
-
-/* IMCC Career Chatbot conversation layout */
-.career-ai-card { max-width: 820px; }
-.career-chat-history { display: none; flex-direction: column; gap: 12px; max-height: 430px; overflow-y: auto; margin-top: 16px; padding: 14px; border: 1px solid var(--border); border-radius: 14px; background: #fffafd; scroll-behavior: smooth; }
-.career-chat-message { max-width: 88%; padding: 12px 14px; border-radius: 14px; line-height: 1.6; overflow-wrap: anywhere; }
-.career-chat-user { align-self: flex-end; white-space: pre-wrap; background: var(--primary); color: #fff; border-bottom-right-radius: 4px; }
-.career-chat-bot { align-self: flex-start; background: #f4edf3; color: #292333; border: 1px solid #eadce7; border-bottom-left-radius: 4px; }
-.career-chat-bot .career-ai-answer { white-space: pre-wrap; }
-.career-chat-bot .career-ai-matches { margin-bottom: 0; }
-.career-chat-bot.career-chat-error { background: #fff0f0; border-color: #f3b7b7; color: #8b1e1e; }
-@media (max-width: 600px) { .career-chat-history { max-height: 55vh; padding: 10px; } .career-chat-message { max-width: 96%; } }
