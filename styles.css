@@ -565,13 +565,39 @@ button {
 }
 
 #recommendation-result {
-    margin-top: 15px;
-    padding: 15px;
-    background: #e9f8ef;
-    border-left: 5px solid var(--success);
     display: none;
-    border-radius: 5px;
+}
+
+.career-ai-messages {
+    max-height: 360px;
+    margin: 14px 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.career-ai-message {
+    width: fit-content;
+    max-width: 90%;
+    margin: 8px 0;
+    padding: 11px 14px;
+    border-radius: 14px;
     animation: fadeIn 0.25s ease-out;
+}
+
+.career-ai-message-user {
+    margin-left: auto;
+    background: var(--primary);
+    color: var(--white);
+}
+
+.career-ai-message-assistant {
+    margin-right: auto;
+    border: 1px solid var(--border);
+    background: var(--white);
+}
+
+.career-ai-message .career-ai-answer {
+    overflow-wrap: anywhere;
 }
 
 .career-ai-answer {
@@ -594,7 +620,7 @@ button {
 
 .career-ai-matches li {
     padding: 10px 0;
-    border-top: 1px solid rgba(22, 163, 74, 0.2);
+    border-top: 1px solid var(--border);
 }
 
 .career-ai-matches p {
@@ -611,16 +637,16 @@ button {
     opacity: 0.7;
 }
 
-#recommendation-result.recommendation-warning {
-    background: #fee2e2;
-    border-left-color: #dc2626;
-    color: #991b1b;
-}
-
 .recommendation-list {
     margin: 12px 0 0 0;
     padding-left: 20px;
     color: #1d3f2d;
+}
+
+#recommendation-result.recommendation-warning {
+    background: #fee2e2;
+    border-left: 5px solid #dc2626;
+    color: #991b1b;
 }
 
 .course-link-panel ul {
