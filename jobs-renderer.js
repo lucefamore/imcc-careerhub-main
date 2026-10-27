@@ -78,14 +78,10 @@ function renderJobs() {
                 '<p class="job-info">' + safeText(job.employmentType) + '</p>' +
                 '<span class="job-tag">' + safeText(job.tag) + '</span>' +
                 '<div class="job-description">' + safeText(description) +
-                '<div class="skills-gap-result" role="status" aria-live="polite"></div>' +
                 '</div>' +
                 '<div class="job-card-actions">' +
                 '<button class="apply-btn" type="button">Apply Now</button>' +
                 '<button class="application-track-btn" type="button">Mark as applied</button>' +
-                '<button class="readiness-btn" type="button">How ready am I?</button>' +
-                '<button class="interview-practice-btn" type="button">Practice interview</button>' +
-                '<button class="cover-letter-btn" type="button">Draft application message</button>' +
                 '</div>' +
                 '<p class="application-track-status" role="status" aria-live="polite"></p>';
 
@@ -97,18 +93,6 @@ function renderJobs() {
             card.querySelector('.application-track-btn').addEventListener('click', function(event) {
                 event.stopPropagation();
                 markJobAsApplied(job, card);
-            });
-            card.querySelector('.readiness-btn').addEventListener('click', function(event) {
-                event.stopPropagation();
-                checkJobReadiness(job, card);
-            });
-            card.querySelector('.interview-practice-btn').addEventListener('click', function(event) {
-                event.stopPropagation();
-                startInterviewPractice(job, event.currentTarget);
-            });
-            card.querySelector('.cover-letter-btn').addEventListener('click', function(event) {
-                event.stopPropagation();
-                draftApplicationMessage(job, event.currentTarget);
             });
 
             card.addEventListener('click', function(event) {
