@@ -7,7 +7,10 @@ function normalizeJob(job, fallbackCategory, fallbackLabel) {
         employmentType: job && (job.employmentType || job.employment_type) ? (job.employmentType || job.employment_type) : '',
         tag: job && job.tag ? job.tag : (fallbackLabel || fallbackCategory || 'General'),
         url: job && job.url ? job.url : '',
-        description: job && job.description ? job.description : ''
+        description: job && job.description ? job.description : '',
+        skills: Array.isArray(job && job.skills)
+            ? job.skills
+            : (job && typeof job.skills === 'string' ? job.skills.split(',').map(function(skill) { return skill.trim(); }).filter(Boolean) : [])
     };
 }
 
@@ -34,61 +37,129 @@ function renderJobs() {
             .replace(/'/g, '&#039;');
     }
 
+    function bookmarkKey(job) {
+        return [job.title, job.company, job.url].join('|').toLowerCase();
+    }
+
+    function getBookmarkedJobs() {
+        try {
+            const saved = JSON.parse(localStorage.getItem('imcc_bookmarked_jobs') || '[]');
+            return Array.isArray(saved) ? saved : [];
+        } catch (error) {
+            console.warn('Saved job bookmarks could not be read:', error.message);
+            return [];
+        }
+    }
+
+    function updateDirectoryStats(allJobs) {
+        const savedKeys = new Set(allJobs.map(function(item) {
+            return bookmarkKey(item.job);
+        }));
+        const saved = getBookmarkedJobs().filter(function(key) {
+            return savedKeys.has(key);
+        });
+        const categoriesCount = new Set(categories.filter(function(group) {
+            return group.jobs.length;
+        }).map(function(group) {
+            return group.category;
+        })).size;
+        const directLinks = allJobs.filter(function(item) {
+            return /^https:\/\//i.test(item.job.url || '');
+        }).length;
+        const stats = [
+            ['activeJobCount', allJobs.length],
+            ['academicProgramCount', categoriesCount],
+            ['directUrlPercentage', allJobs.length ? Math.round(directLinks / allJobs.length * 100) + '%' : '0%'],
+            ['savedJobCount', saved.length]
+        ];
+        stats.forEach(function(stat) {
+            const element = document.getElementById(stat[0]);
+            if (element) element.textContent = stat[1];
+        });
+    }
+
+    function updateLocationFilter(allJobs) {
+        const select = document.getElementById('jobLocation');
+        if (!select) return;
+        const selectedLocation = select.value;
+        const locations = Array.from(new Set(allJobs.map(function(item) {
+            return item.job.location || '';
+        }).filter(Boolean))).sort();
+        select.replaceChildren(new Option('All locations', 'all'));
+        locations.forEach(function(location) {
+            const label = location.replace(/^[^A-Za-z0-9]+/, '').trim();
+            select.add(new Option(label || location, location));
+        });
+        if (locations.indexOf(selectedLocation) !== -1) select.value = selectedLocation;
+    }
+
+    const allJobs = [];
     categories.forEach(function(categoryGroup) {
         let block = document.createElement('div');
-        block.className = 'category-block is-collapsed';
+        block.className = 'category-block';
         block.dataset.categoryGroup = categoryGroup.category;
 
-        let heading = document.createElement('div');
-        heading.className = 'category-heading';
-
-        let headingTitle = document.createElement('h3');
-        headingTitle.textContent = categoryGroup.label;
-        heading.appendChild(headingTitle);
-
-        let toggleButton = document.createElement('button');
-        toggleButton.type = 'button';
-        toggleButton.className = 'category-toggle';
-        toggleButton.textContent = 'Show Jobs';
-        toggleButton.setAttribute('aria-expanded', 'false');
-        toggleButton.setAttribute('aria-label', 'Show ' + categoryGroup.label + ' jobs');
-        toggleButton.addEventListener('click', function(event) {
-            event.stopPropagation();
-            const collapsed = block.classList.toggle('is-collapsed');
-            toggleButton.textContent = collapsed ? 'Show Jobs' : 'Hide Jobs';
-            toggleButton.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
-            toggleButton.setAttribute('aria-label', (collapsed ? 'Show ' : 'Hide ') + categoryGroup.label + ' jobs');
-        });
-        heading.appendChild(toggleButton);
-        block.appendChild(heading);
-
         categoryGroup.jobs.forEach(function(job) {
+            allJobs.push({ job: job, category: categoryGroup.category });
             let card = document.createElement('div');
             card.className = 'job-card';
             card.dataset.category = categoryGroup.category;
+            card.dataset.employmentType = job.employmentType || '';
+            card.dataset.location = job.location || '';
             card.tabIndex = 0;
             if (job.url) card.dataset.url = job.url;
 
             let description = job.description || ('This ' + (job.tag || categoryGroup.label) + ' opportunity at ' + job.company + ' is a strong fit for students and alumni seeking practical experience, career growth, and role-based development in ' + (categoryGroup.label || 'this field') + '.');
-
+            const savedJobs = getBookmarkedJobs();
+            const isBookmarked = savedJobs.indexOf(bookmarkKey(job)) !== -1;
+            const skillTags = Array.isArray(job.skills) ? job.skills.filter(Boolean).slice(0, 5) : [];
             card.innerHTML =
+                '<div class="job-card-top">' +
+                '<span class="job-tag">' + safeText(categoryGroup.label) + '</span>' +
+                '<button class="job-bookmark-btn' + (isBookmarked ? ' is-bookmarked' : '') + '" type="button" aria-label="' + (isBookmarked ? 'Remove bookmark for ' : 'Bookmark ') + safeText(job.title) + '" aria-pressed="' + (isBookmarked ? 'true' : 'false') + '">&#9825;</button>' +
+                '</div>' +
                 '<h3>' + safeText(job.title) + '</h3>' +
                 '<p class="company">' + safeText(job.company) + '</p>' +
-                '<p class="job-info">' + safeText(job.location) + '</p>' +
-                '<p class="job-info">' + safeText(job.employmentType) + '</p>' +
-                '<span class="job-tag">' + safeText(job.tag) + '</span>' +
-                '<div class="job-description">' + safeText(description) +
-                '<div class="skills-gap-result" role="status" aria-live="polite"></div>' +
+                '<div class="job-meta">' +
+                '<p class="job-info"><span aria-hidden="true">&#9679;</span> ' + safeText(job.location) + '</p>' +
+                '<p class="job-info"><span aria-hidden="true">&#9711;</span> ' + safeText(job.employmentType) + '</p>' +
+                '</div>' +
+                '<div class="job-description"><p>' + safeText(description) + '</p>' +
+                (skillTags.length ? '<div class="job-skills">' + skillTags.map(function(skill) { return '<span>' + safeText(skill) + '</span>'; }).join('') + '</div>' : '') +
                 '</div>' +
                 '<div class="job-card-actions">' +
-                '<button class="apply-btn" type="button">Apply Now</button>' +
+                '<button class="job-details-btn" type="button" aria-expanded="false">Details</button>' +
                 '<button class="application-track-btn" type="button">Mark as applied</button>' +
-                '<button class="readiness-btn" type="button">How ready am I?</button>' +
-                '<button class="interview-practice-btn" type="button">Practice interview</button>' +
-                '<button class="cover-letter-btn" type="button">Draft application message</button>' +
+                '<button class="apply-btn" type="button">Apply Direct &#8599;</button>' +
                 '</div>' +
                 '<p class="application-track-status" role="status" aria-live="polite"></p>';
 
+            card.querySelector('.job-bookmark-btn').addEventListener('click', function(event) {
+                event.stopPropagation();
+                const button = event.currentTarget;
+                let bookmarks = getBookmarkedJobs();
+                const key = bookmarkKey(job);
+                const index = bookmarks.indexOf(key);
+                if (index === -1) bookmarks.push(key);
+                else bookmarks.splice(index, 1);
+                try {
+                    localStorage.setItem('imcc_bookmarked_jobs', JSON.stringify(bookmarks));
+                    const bookmarked = index === -1;
+                    button.classList.toggle('is-bookmarked', bookmarked);
+                    button.setAttribute('aria-pressed', bookmarked ? 'true' : 'false');
+                    button.setAttribute('aria-label', (bookmarked ? 'Remove bookmark for ' : 'Bookmark ') + job.title);
+                    button.innerHTML = bookmarked ? '&#9829;' : '&#9825;';
+                    updateDirectoryStats(allJobs);
+                } catch (error) {
+                    console.warn('Job bookmark could not be saved:', error.message);
+                }
+            });
+            card.querySelector('.job-details-btn').addEventListener('click', function(event) {
+                event.stopPropagation();
+                const expanded = card.classList.toggle('is-open');
+                event.currentTarget.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                event.currentTarget.textContent = expanded ? 'Hide details' : 'Details';
+            });
             card.querySelector('.apply-btn').addEventListener('click', function(event) {
                 event.stopPropagation();
                 logJobEvent('apply_click', job, categoryGroup.category);
@@ -98,31 +169,25 @@ function renderJobs() {
                 event.stopPropagation();
                 markJobAsApplied(job, card);
             });
-            card.querySelector('.readiness-btn').addEventListener('click', function(event) {
-                event.stopPropagation();
-                checkJobReadiness(job, card);
-            });
-            card.querySelector('.interview-practice-btn').addEventListener('click', function(event) {
-                event.stopPropagation();
-                startInterviewPractice(job, event.currentTarget);
-            });
-            card.querySelector('.cover-letter-btn').addEventListener('click', function(event) {
-                event.stopPropagation();
-                draftApplicationMessage(job, event.currentTarget);
-            });
 
             card.addEventListener('click', function(event) {
                 if (event.target && event.target.closest('button')) {
                     return;
                 }
-                card.classList.toggle('is-open');
+                const expanded = card.classList.toggle('is-open');
+                const detailsButton = card.querySelector('.job-details-btn');
+                detailsButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                detailsButton.textContent = expanded ? 'Hide details' : 'Details';
             });
 
             card.addEventListener('keydown', function(event) {
                 if (event.target !== card) return;
                 if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault();
-                    card.classList.toggle('is-open');
+                    const expanded = card.classList.toggle('is-open');
+                    const detailsButton = card.querySelector('.job-details-btn');
+                    detailsButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                    detailsButton.textContent = expanded ? 'Hide details' : 'Details';
                 }
             });
 
@@ -242,6 +307,7 @@ function renderJobs() {
             block.appendChild(itLinkPanel);
         }
 
+        container.appendChild(block);
         container.appendChild(block);
     });
 }

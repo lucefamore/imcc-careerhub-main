@@ -27,22 +27,16 @@ flowchart TD
     H --> I[Current job feed from UI]
     H --> G
     G --> J[Validated recommendations]
-    F -->|skills-gap| K[Structured AI response]
-    F -->|interview| L[Questions and answer feedback]
-    F -->|profile-feedback| M[Strengths and improvements]
-    F -->|cover-letter| N[Draft application message]
+    F -->|profile-feedback| K[Strengths and improvements]
     J --> O[Render results safely in UI]
     K --> O
-    L --> O
-    M --> O
-    N --> O
 ```
 
 ## Suggested modules and responsibilities
 
 1. **Frontend (`index.html`, `styles.css`)**
    - Collect the user's career question.
-   - Send a short prompt, selected job feed, and minimal profile data to the API.
+   - Maintain a short chat transcript and send follow-up history with the current question, selected job feed, and minimal profile data to the API.
    - Render AI output using DOM `textContent` rather than interpreting generated HTML.
    - Keep employer application links as the source of truth.
 
@@ -59,20 +53,44 @@ flowchart TD
    - The model may explain matches but must not invent vacancies, employers, salaries, or requirements.
 
 4. **Career features**
-   - **Career chat / job recommendations:** understand the question, search current openings, explain fit, suggest skills to build.
-   - **Skills-gap checker:** compare stated skills with a selected job.
-   - **Interview practice:** generate five role-specific questions, then score an answer and offer improvements.
+   - **Career chat / job recommendations:** understand the question, search current openings, explain fit, suggest skills to build, and use recent messages for follow-up questions.
+   - **Job cards:** provide employer application links and application tracking.
    - **Profile feedback:** return strengths and improvement suggestions.
-   - **Application message:** draft a 120–180 word message using only supplied profile facts.
 
 5. **Data layer (Supabase)**
    - Use Supabase Auth for identity and the existing database for profiles/jobs.
    - For production, prefer querying published jobs server-side instead of trusting a job list supplied by the browser.
    - Keep RLS enabled. Never put the Supabase `service_role` key in browser code.
 
+## Admin access
+
+Admins use the same institutional Google sign-in as other users. After Supabase verifies the account's `user_roles` entry, the app automatically opens the admin dashboard; regular users go to the marketplace.
+
+To grant admin access, have the person sign in once, then run this in the Supabase SQL Editor with their institutional email:
+
+```sql
+do $$
+declare
+  admin_user_id uuid;
+begin
+  select id into admin_user_id
+  from auth.users
+  where lower(email) = lower('admin@imcc.edu.ph');
+
+  if admin_user_id is null then
+    raise exception 'No Supabase user found for that email. Sign in with Google first.';
+  end if;
+
+  perform public.set_app_role(admin_user_id, 'admin'::public.app_role);
+end;
+$$;
+```
+
+The user may need to sign out and sign in again for the role change to take effect. Grant roles only through the SQL Editor; never expose the service-role key to the browser.
+
 ## What was fixed in this project copy
 
-- Added API handling for the `skills-gap`, `interview`, `profile-feedback`, and `cover-letter` modes that the frontend already calls. Previously, the API only handled the default recommendation/chat request, so those other actions could fail.
+- Kept profile feedback as the only separate AI mode alongside career chat and job recommendations.
 - Applied shared rate limiting to all AI modes and required a verified Supabase user for profile-based tools.
 - Fixed the build script: it no longer references a missing `flowise-widget.js`; it copies the actual static assets to `public/`.
 - Connected `npm run build` to the build script and configured Vercel's static output directory as `public/`.
@@ -83,12 +101,11 @@ flowchart TD
 2. Confirm `GROQ_MODEL=openai/gpt-oss-120b` and `GROQ_FALLBACK_MODEL=openai/gpt-oss-20b` (optional; defaults already exist in the API).
 3. Commit and push the project changes.
 4. Redeploy on Vercel.
-5. Test each feature while signed in with an `@imcc.edu.ph` account:
-   - Ask Career AI for jobs by course, skills, or location.
-   - Open a job card and test “How ready am I?”
-   - Run interview practice and submit an answer.
+5. Test the career chat while signed in with an `@imcc.edu.ph` account:
+   - Ask Career AI for jobs by course, skills, or location, then ask a follow-up.
+   - Use a quick question and start a new chat.
+   - Confirm job cards retain Apply Now and Mark as applied, without extra AI action buttons.
    - Request profile feedback.
-   - Draft an application message.
 6. Test an invalid request and confirm the UI displays a friendly error. Do not test by pasting the API key into browser code.
 
 ## Important limitations

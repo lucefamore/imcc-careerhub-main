@@ -40,31 +40,59 @@
 <div class="nav-scrim" id="navScrim" onclick="closeMobileNav()"></div>
 
 <section class="hero" id="home">
-    <p class="hero-kicker">IMCC Careers | AI-Powered Job Recommendation System</p>
-    <h1>Find the right job for your career.</h1>
-    <p>Personalized opportunities for IMCC students and alumni, powered by your profile, skills, and goals.</p>
+    <p class="hero-kicker">Verified career opportunities for the IMCC community</p>
+    <h1>Find your next career opportunity.</h1>
+    <p>Explore direct openings across healthcare, technology, business, education, and more.</p>
     <div class="search-box">
-        <input type="text" id="jobSearch" placeholder="Search title, company, or skill..." oninput="handleSearchInput()" onkeydown="if(event.key==='Enter'){event.preventDefault();searchJobs();}">
-        <select id="jobCategory" onchange="searchJobs()">
-            <option value="all">All Categories</option>
-            <option value="IT">Information Technology</option>
-            <option value="Healthcare">Healthcare</option>
-            <option value="Business">Business</option>
-            <option value="CCJE">CCJE</option>
-            <option value="Social Work">Social Work</option>
-            <option value="CHTM">CHTM</option>
-            <option value="Education">Education</option>
+        <div class="job-search-field">
+            <span aria-hidden="true">⌕</span>
+            <input type="search" id="jobSearch" placeholder="Search job title, employer, or skill..." aria-label="Search jobs" oninput="handleSearchInput()" onkeydown="if(event.key==='Enter'){event.preventDefault();searchJobs();}">
+        </div>
+        <select id="jobEmploymentType" aria-label="Filter by employment type" onchange="searchJobs()">
+            <option value="all">All employment types</option>
+            <option value="full-time">Full-time</option>
+            <option value="part-time">Part-time</option>
+            <option value="contract">Contract</option>
+            <option value="internship">Internship</option>
         </select>
-        <button class="search-btn" onclick="searchJobs()">Search Jobs</button>
-        <button class="clear-btn" onclick="clearSearch()">Clear</button>
-        <div id="searchResultMessage" class="search-result-message"></div>
+        <select id="jobLocation" aria-label="Filter by location" onchange="searchJobs()">
+            <option value="all">All locations</option>
+        </select>
+        <input type="hidden" id="jobCategory" value="all">
+        <div class="search-box-note">
+            <span>Every listing links directly to the employer or job-site application.</span>
+            <button class="clear-btn" type="button" onclick="clearSearch()">Reset search</button>
+        </div>
     </div>
 </section>
 
-<section class="statistics">
-    <div class="stat-card"><h2>150+</h2><p>Available Job Opportunities</p></div>
-    <div class="stat-card"><h2>500+</h2><p>Students and Alumni</p></div>
-    <div class="stat-card"><h2>30+</h2><p>Career Partners</p></div>
+<section class="statistics" aria-label="Job directory statistics">
+    <div class="stat-card"><h2 id="activeJobCount">0</h2><p>Active career listings</p></div>
+    <div class="stat-card"><h2 id="academicProgramCount">7</h2><p>Academic programs</p></div>
+    <div class="stat-card"><h2 id="directUrlPercentage">100%</h2><p>Direct job links</p></div>
+    <div class="stat-card"><h2 id="savedJobCount">0</h2><p>Bookmarked positions</p></div>
+</section>
+
+<section class="jobs-section" id="jobs">
+    <div class="section-title">
+        <div>
+            <span class="section-kicker">Explore openings</span>
+            <h2>Direct Job Directory</h2>
+            <p>Filter vacancies by academic program and find your next step.</p>
+        </div>
+        <span id="searchResultMessage" class="search-result-message">Showing all listings</span>
+    </div>
+    <div class="filters" role="group" aria-label="Filter jobs by academic program">
+        <button class="filter-btn active" data-category="all" type="button" aria-pressed="true" onclick="filterJobs('all', event)">All Programs</button>
+        <button class="filter-btn" data-category="Healthcare" type="button" aria-pressed="false" onclick="filterJobs('Healthcare', event)">Healthcare &amp; Nursing</button>
+        <button class="filter-btn" data-category="IT" type="button" aria-pressed="false" onclick="filterJobs('IT', event)">IT &amp; Computer Studies</button>
+        <button class="filter-btn" data-category="Business" type="button" aria-pressed="false" onclick="filterJobs('Business', event)">Business &amp; Accountancy</button>
+        <button class="filter-btn" data-category="Education" type="button" aria-pressed="false" onclick="filterJobs('Education', event)">Teacher Education</button>
+        <button class="filter-btn" data-category="CCJE" type="button" aria-pressed="false" onclick="filterJobs('CCJE', event)">Criminology (CCJE)</button>
+        <button class="filter-btn" data-category="Social Work" type="button" aria-pressed="false" onclick="filterJobs('Social Work', event)">Social Work</button>
+        <button class="filter-btn" data-category="CHTM" type="button" aria-pressed="false" onclick="filterJobs('CHTM', event)">Hospitality &amp; Tourism</button>
+    </div>
+    <div class="job-container" id="jobContainer"></div>
 </section>
 
 <section class="recommended-section" id="recommended">
@@ -78,30 +106,6 @@
     <div id="recommendedJobs" class="recommended-grid"></div>
 </section>
 
-<section class="jobs-section" id="jobs">
-    <div class="section-title">
-        <h2>Latest Job Opportunities</h2>
-        <p>Explore jobs that match your education and skills.</p>
-    </div>
-    <div class="jobs-layout">
-        <aside class="course-sidebar" aria-label="Filter jobs by course">
-            <span class="course-sidebar-title">Courses</span>
-            <div class="filters">
-                <button class="filter-btn active" onclick="filterJobs('all', event)">All Jobs</button>
-                <button class="filter-btn" onclick="filterJobs('IT', event)">IT</button>
-                <button class="filter-btn" onclick="filterJobs('Healthcare', event)">Healthcare</button>
-                <button class="filter-btn" onclick="filterJobs('Business', event)">Business</button>
-                <button class="filter-btn" onclick="filterJobs('CCJE', event)">CCJE</button>
-                <button class="filter-btn" onclick="filterJobs('Social Work', event)">Social Work</button>
-                <button class="filter-btn" onclick="filterJobs('CHTM', event)">CHTM</button>
-                <button class="filter-btn" onclick="filterJobs('Education', event)">Education</button>
-            </div>
-        </aside>
-        <div class="job-container" id="jobContainer"></div>
-    </div>
-</section>
-
-
 <!-- AI JOB RECOMMENDATION -->
 
 <section class="ai-section" id="ai">
@@ -112,14 +116,15 @@
             <div class="career-ai-heading">
                 <span class="ai-spark">🤖</span>
                 <div>
-                    <span class="ai-label">Ask IMCC Career AI</span>
-                    <p>Tell us what you want to find.</p>
+                    <span class="ai-label">IMCC Career AI Chat</span>
+                    <p>Ask about careers, job openings, skills, or applications.</p>
                 </div>
             </div>
+            <div id="recommendation-result" class="career-ai-messages" role="log" aria-label="Career AI conversation" aria-live="polite" aria-relevant="additions text"></div>
             <div class="career-ai-input-row">
-                <input id="aiPrompt" type="text" placeholder="What jobs fit my skills?" aria-label="Ask IMCC Career AI" onkeydown="if(event.key==='Enter'){event.preventDefault();askCareerAI();}">
+                <input id="aiPrompt" type="text" placeholder="Ask a question or follow up..." aria-label="Message IMCC Career AI" onkeydown="if(event.key==='Enter'){event.preventDefault();askCareerAI();}">
                 <button class="search-btn" id="careerAiSendButton" type="button" onclick="askCareerAI()">Send</button>
-                <button class="ai-clear-btn" type="button" onclick="clearRecommendation()">Clear</button>
+                <button class="ai-clear-btn" type="button" onclick="clearRecommendation()">New chat</button>
             </div>
             <div class="career-ai-quick-questions" role="group" aria-label="Quick career questions">
                 <button type="button" onclick="askCareerQuickQuestion('fresh-graduates')">Jobs for fresh graduates</button>
@@ -128,7 +133,6 @@
                 <button type="button" onclick="askCareerQuickQuestion('my-course')">Jobs for my course</button>
             </div>
             <p class="career-ai-hint">Try: “I know HTML and Python” or “I want a healthcare job.”</p>
-            <div id="recommendation-result" role="status" aria-live="polite"></div>
         </div>
 
         <div class="ai-content">
@@ -295,20 +299,6 @@
                     <span>Continue with Google</span>
                 </button>
                 <p class="form-error" id="loginError"></p>
-                <button class="auth-admin-link" type="button" onclick="showAdminLogin()">Admin sign in</button>
-            </form>
-        </div>
-
-        <div class="auth-view" id="adminLoginView">
-            <h3>IMCC-Careers Admin</h3>
-            <p class="auth-note">Use your authorized institutional Google account to manage the marketplace.</p>
-            <form class="auth-form">
-                <button id="admin-google-login" class="google-signin-btn" type="button" aria-label="Admin sign in with Google">
-                    <span class="google-mark" aria-hidden="true">G</span>
-                    <span>Continue as Admin</span>
-                </button>
-                <p class="form-error" id="adminLoginError"></p>
-                <button class="auth-admin-link" type="button" onclick="showLogin()">Back to user sign in</button>
             </form>
         </div>
 
@@ -345,47 +335,6 @@
             </div>
             <p class="form-error" id="profileEditError"></p>
         </form>
-    </div>
-</div>
-
-<div class="profile-edit-modal interview-modal" id="interviewModal" aria-hidden="true">
-    <div class="profile-edit-card interview-card" role="dialog" aria-modal="true" aria-labelledby="interviewTitle">
-        <button class="close-btn" id="interviewCloseButton" type="button" onclick="closeInterviewModal()" aria-label="Close interview practice">&times;</button>
-        <div class="profile-edit-heading">
-            <span class="profile-edit-kicker">Career practice</span>
-            <h3 id="interviewTitle">Practice interview</h3>
-            <p id="interviewJobLabel"></p>
-        </div>
-        <div id="interviewQuestionPanel" class="interview-question-panel" hidden>
-            <p id="interviewProgress" class="interview-progress"></p>
-            <h4 id="interviewQuestion"></h4>
-            <label for="interviewAnswer">Your answer (up to 800 characters)</label>
-            <textarea id="interviewAnswer" rows="5" maxlength="800" oninput="updateInterviewCharacterCount(this)"></textarea>
-            <p id="interviewCharacterCount" class="interview-character-count">0 / 800</p>
-            <button class="submit-btn" id="interviewSubmitButton" type="button" onclick="submitInterviewAnswer()">Get feedback</button>
-        </div>
-        <div id="interviewFeedback" class="interview-feedback" aria-live="polite"></div>
-        <p id="interviewStatus" class="form-error" role="status" aria-live="polite"></p>
-        <button class="submit-btn" id="interviewNextButton" type="button" onclick="advanceInterview()" hidden>Next question</button>
-    </div>
-</div>
-
-<div class="profile-edit-modal cover-letter-modal" id="coverLetterModal" aria-hidden="true">
-    <div class="profile-edit-card cover-letter-card" role="dialog" aria-modal="true" aria-labelledby="coverLetterTitle">
-        <button class="close-btn" id="coverLetterCloseButton" type="button" onclick="closeCoverLetterModal()" aria-label="Close application message draft">&times;</button>
-        <div class="profile-edit-heading">
-            <span class="profile-edit-kicker">Application support</span>
-            <h3 id="coverLetterTitle">Draft application message</h3>
-            <p id="coverLetterJobLabel"></p>
-        </div>
-        <label class="cover-letter-draft-label" for="coverLetterDraft">Application message draft</label>
-        <textarea id="coverLetterDraft" class="cover-letter-draft" rows="9" aria-live="polite"></textarea>
-        <p class="cover-letter-disclaimer">This is a draft. Review and edit before sending.</p>
-        <p id="coverLetterStatus" class="form-error" role="status" aria-live="polite"></p>
-        <div class="cover-letter-actions">
-            <button class="submit-btn" id="coverLetterCopyButton" type="button" onclick="copyCoverLetterDraft()" disabled>Copy</button>
-            <button class="download-cv-btn" id="coverLetterRegenerateButton" type="button" onclick="regenerateCoverLetter()" disabled>Regenerate</button>
-        </div>
     </div>
 </div>
 
@@ -669,7 +618,6 @@ async function restoreSupabaseSession() {
     sessionRestoreInProgress = true;
     document.body.classList.add('auth-locked');
     openAuthModal();
-    const adminLoginRequested = sessionStorage.getItem('imcc_admin_login_requested') === '1';
     if (!hasSupabaseConfig()) {
         sessionRestoreInProgress = false;
         return setAuthError('login', 'Account service is not configured. Please contact support.');
@@ -686,19 +634,12 @@ async function restoreSupabaseSession() {
         }
         if (!session || !session.user || !isInstitutionalEmail(session.user.email)) {
             await window.supabaseClient.auth.signOut();
-            if (adminLoginRequested) showAdminLogin();
-            return setAuthError(
-                adminLoginRequested ? 'adminLogin' : 'login',
-                getInstitutionalEmailError(session && session.user ? session.user.email : '', adminLoginRequested)
-            );
+            return setAuthError('login', getInstitutionalEmailError(session && session.user ? session.user.email : ''));
         }
 
-        sessionStorage.removeItem('imcc_admin_login_requested');
-
         /*
-         * Do not make the user wait for several database requests one after another.
-         * Show the marketplace immediately for normal users, while role/profile/jobs
-         * are loaded in parallel in the background.
+         * Verify the role and load profile data together, then route admins to
+         * the admin dashboard and regular users to the marketplace.
          */
         const userMetadata = session.user.user_metadata || {};
         const fallbackProfile = {
@@ -707,19 +648,10 @@ async function restoreSupabaseSession() {
             fullname: userMetadata.full_name || userMetadata.name || session.user.email.split('@')[0]
         };
 
-        // Let regular users enter the marketplace while profile and role data load.
-        if (!adminLoginRequested) goToMarketplaceHome();
-
         const [isAdmin, existingProfile] = await Promise.all([
             supabaseIsAdmin(session.user.id),
             supabaseGetProfile(session.user.id)
         ]);
-
-        if (adminLoginRequested && !isAdmin) {
-            await window.supabaseClient.auth.signOut();
-            showAdminLogin();
-            return setAuthError('adminLogin', 'This institutional account is not authorized for admin access.');
-        }
 
         let profile = existingProfile;
         if (!profile) {
@@ -748,6 +680,13 @@ async function restoreSupabaseSession() {
         }));
         updateNavAuthState();
 
+        if (isAdmin) {
+            await showAdminDashboard();
+            return;
+        }
+
+        goToMarketplaceHome();
+
         // These are independent operations; run them together so login is faster.
         const backgroundLoads = [
             Promise.resolve().then(function() { getManagedJobs(); }),
@@ -756,9 +695,6 @@ async function restoreSupabaseSession() {
         ];
         await Promise.allSettled(backgroundLoads);
 
-        if (isAdmin) {
-            showAdminDashboard();
-        }
     } catch (error) {
         console.warn('Supabase session restore failed:', error.message);
         if (document.body.classList.contains('auth-locked')) {
@@ -811,9 +747,7 @@ function closeAuthModal() {
 
 function showAuthView(view) {
     const loginView = document.getElementById('loginView');
-    const adminLoginView = document.getElementById('adminLoginView');
     if (loginView) loginView.classList.toggle('active', view === 'login');
-    if (adminLoginView) adminLoginView.classList.toggle('active', view === 'admin');
 }
 
 function updateNavAuthState() {
@@ -892,12 +826,6 @@ async function openUserProfile() {
     await openUserDashboard();
     if (document.body.classList.contains('auth-locked')) return;
     editProfile();
-}
-
-function showAdminLogin() {
-    showAuthView('admin');
-    openAuthModal();
-    clearAuthErrors('adminLogin');
 }
 
 const MANAGED_JOBS_STORAGE_KEY = 'imcc_managed_jobs';
@@ -1360,25 +1288,11 @@ document.getElementById("jobEditorModal").addEventListener("click", function(eve
     }
 });
 
-document.getElementById("interviewModal").addEventListener("click", function(event) {
-    if (event.target === event.currentTarget) {
-        closeInterviewModal();
-    }
-});
-
-document.getElementById("coverLetterModal").addEventListener("click", function(event) {
-    if (event.target === event.currentTarget) {
-        closeCoverLetterModal();
-    }
-});
-
 window.addEventListener("keydown", function(event) {
     if (event.key === "Escape") {
         closeAuthModal();
         closeProfileEditModal();
         closeJobEditor();
-        closeInterviewModal();
-        closeCoverLetterModal();
     }
 });
 
@@ -1424,16 +1338,12 @@ function isInstitutionalEmail(email) {
     return /^[^@\s]+@imcc\.edu\.ph$/i.test(String(email || '').trim());
 }
 
-function getInstitutionalEmailError(email, isAdminAttempt) {
+function getInstitutionalEmailError(email) {
     const trimmed = String(email || '').trim();
     if (!trimmed) {
-        return isAdminAttempt
-            ? 'Admin access requires an @imcc.edu.ph institutional Google account.'
-            : 'Please sign in with your @imcc.edu.ph institutional Google account.';
+        return 'Please sign in with your @imcc.edu.ph institutional Google account.';
     }
-    return isAdminAttempt
-        ? 'This account is not authorized for admin access. Please use an @imcc.edu.ph institutional Google account.'
-        : 'Only @imcc.edu.ph institutional Google accounts can access IMCC Careers.';
+    return 'Only @imcc.edu.ph institutional Google accounts can access IMCC Careers.';
 }
 
 async function handleLoginSubmit(event) {
@@ -1475,7 +1385,7 @@ async function signInWithGoogle(triggerButton) {
         const message = String(error.message || '').toLowerCase().includes('provider is not enabled')
             ? 'Google SSO is not enabled in Supabase. Please enable the Google provider, then try again.'
             : 'Institutional sign-in is temporarily unavailable. Please try again.';
-        setAuthError(sessionStorage.getItem('imcc_admin_login_requested') === '1' ? 'adminLogin' : 'login', message);
+        setAuthError('login', message);
         if (triggerButton) {
             triggerButton.disabled = false;
             if (triggerButton.dataset.originalLabel) triggerButton.innerHTML = triggerButton.dataset.originalLabel;
@@ -1485,20 +1395,10 @@ async function signInWithGoogle(triggerButton) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const googleLoginButton = document.getElementById('google-login');
-    const adminGoogleLoginButton = document.getElementById('admin-google-login');
-    const continueLoginButton = document.getElementById('continueVerifiedLogin');
-    const adminContinueLoginButton = document.getElementById('adminContinueVerifiedLogin');
 
     if (googleLoginButton) {
         googleLoginButton.addEventListener('click', function() {
-            sessionStorage.removeItem('imcc_admin_login_requested');
             signInWithGoogle(googleLoginButton);
-        });
-    }
-    if (adminGoogleLoginButton) {
-        adminGoogleLoginButton.addEventListener('click', function() {
-            sessionStorage.setItem('imcc_admin_login_requested', '1');
-            signInWithGoogle(adminGoogleLoginButton);
         });
     }
 });
@@ -2327,69 +2227,15 @@ async function logJobEvent(eventType, job, category) {
 
 /* FILTER JOBS */
 
-function filterJobs(category, event) {
-
-    let jobs =
-    document.querySelectorAll(
-        ".job-card"
-    );
-
-    let buttons =
-    document.querySelectorAll(
-        ".filter-btn"
-    );
-
-    buttons.forEach(
-        function(button) {
-
-            button.classList.remove(
-                "active"
-            );
-
-        }
-    );
-
-    if (event && event.currentTarget) {
-        event.currentTarget.classList.add(
-            "active"
-        );
-    }
-
-    jobs.forEach(
-        function(job) {
-            if (
-                category === "all" ||
-                job.dataset.category === category
-            ) {
-                job.style.display = "block";
-            } else {
-                job.style.display = "none";
-            }
-        }
-    );
-
-    document.querySelectorAll('.category-block').forEach(
-        function(block) {
-            let visibleJobs = block.querySelectorAll('.job-card:not([style*="display: none"])');
-            const hasVisibleJobs = visibleJobs.length > 0;
-            const matchesSelectedCategory = category === 'all' || block.dataset.categoryGroup === category;
-            const toggle = block.querySelector('.category-toggle');
-            if (category === 'all') {
-                block.classList.add('is-collapsed');
-                if (toggle) {
-                    toggle.textContent = 'Show Jobs';
-                    toggle.setAttribute('aria-expanded', 'false');
-                }
-            } else if (matchesSelectedCategory) {
-                block.classList.remove('is-collapsed');
-                if (toggle) {
-                    toggle.textContent = 'Hide Jobs';
-                    toggle.setAttribute('aria-expanded', 'true');
-                }
-            }
-            block.style.display = hasVisibleJobs ? 'grid' : 'none';
-        }
-    );
+function filterJobs(category) {
+    const categorySelect = document.getElementById('jobCategory');
+    if (categorySelect) categorySelect.value = category;
+    document.querySelectorAll('.filter-btn').forEach(function(button) {
+        const selected = button.dataset.category === category;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    });
+    searchJobs();
 }
 
 
@@ -2402,145 +2248,55 @@ function handleSearchInput() {
 }
 
 function searchJobs() {
-
-    let search =
-    document
-    .getElementById(
-        "jobSearch"
-    )
-    .value
-    .trim()
-    .toLowerCase();
-
-    let category =
-    document
-    .getElementById(
-        "jobCategory"
-    )
-    .value;
-
-    let jobs =
-    document.querySelectorAll(
-        ".job-card"
-    );
-
+    const search = (document.getElementById('jobSearch').value || '').trim().toLowerCase();
+    const category = document.getElementById('jobCategory').value;
+    const employmentType = document.getElementById('jobEmploymentType').value;
+    const location = document.getElementById('jobLocation').value;
     let visibleCount = 0;
 
-    jobs.forEach(
-        function(job) {
+    document.querySelectorAll('.job-card').forEach(function(job) {
+        const searchableText = [
+            job.querySelector('h3').textContent,
+            job.querySelector('.company').textContent,
+            job.dataset.location,
+            job.dataset.employmentType,
+            job.querySelector('.job-description').textContent
+        ].join(' ').toLowerCase();
+        const normalizedEmployment = (job.dataset.employmentType || '').toLowerCase().replace(/[^a-z]+/g, '');
+        const matchesSearch = !search || searchableText.includes(search);
+        const matchesCategory = category === 'all' || job.dataset.category === category;
+        const matchesEmployment = employmentType === 'all' || normalizedEmployment.includes(employmentType.replace(/[^a-z]+/g, ''));
+        const matchesLocation = location === 'all' || job.dataset.location === location;
+        const visible = matchesSearch && matchesCategory && matchesEmployment && matchesLocation;
+        job.style.display = visible ? '' : 'none';
+        if (visible) visibleCount += 1;
+    });
 
-            let title =
-            job.querySelector("h3")
-            .innerText
-            .toLowerCase();
-
-            let company =
-            job.querySelector(".company")
-            .innerText
-            .toLowerCase();
-
-            let tag =
-            job.querySelector(".job-tag")
-            .innerText
-            .toLowerCase();
-
-            let matchesSearch =
-            !search ||
-            title.includes(search) ||
-            company.includes(search) ||
-            tag.includes(search);
-
-            let matchesCategory =
-            category === "all" ||
-            category ===
-            job.dataset.category;
-
-            if(
-                matchesSearch &&
-                matchesCategory
-            ) {
-
-                job.style.display =
-                "block";
-                visibleCount++;
-
-            }
-
-            else {
-
-                job.style.display =
-                "none";
-
-            }
-
-        }
-    );
-
-    let message =
-    document.getElementById(
-        "searchResultMessage"
-    );
-
-    if (search || category !== "all") {
-        let foundText =
-            visibleCount +
-            " job" +
-            (visibleCount === 1 ?
-                " found" :
-                "s found");
-
-        if (visibleCount) {
-            message.innerHTML =
-                `<a href="#" onclick="scrollToFirstVisibleJob(event)">` +
-                foundText +
-                " — click to view" +
-                `</a>`;
-        } else {
-            message.textContent = foundText;
-        }
-    } else {
-        message.textContent = "";
+    const message = document.getElementById('searchResultMessage');
+    if (message) {
+        message.textContent = 'Showing ' + visibleCount + ' of ' + document.querySelectorAll('.job-card').length + ' vacancy listings';
     }
-
-    document.querySelectorAll('.category-block').forEach(
-        function(block) {
-            let visibleJobs = block.querySelectorAll('.job-card:not([style*="display: none"])');
-            const hasVisibleJobs = visibleJobs.length > 0;
-            const toggle = block.querySelector('.category-toggle');
-            if (search || category !== 'all') {
-                if (hasVisibleJobs) block.classList.remove('is-collapsed');
-                if (toggle && hasVisibleJobs) {
-                    toggle.textContent = 'Hide Jobs';
-                    toggle.setAttribute('aria-expanded', 'true');
-                }
-            } else {
-                block.classList.add('is-collapsed');
-                if (toggle) {
-                    toggle.textContent = 'Show Jobs';
-                    toggle.setAttribute('aria-expanded', 'false');
-                }
-            }
-            block.style.display = hasVisibleJobs ? 'grid' : 'none';
-        }
-    );
+    const emptyState = document.querySelector('.job-empty-state');
+    if (emptyState) emptyState.remove();
+    if (!visibleCount) {
+        const empty = document.createElement('p');
+        empty.className = 'job-empty-state';
+        empty.textContent = 'No vacancies match those filters. Try changing your search.';
+        document.getElementById('jobContainer').appendChild(empty);
+    }
 }
 
 function clearSearch() {
     document.getElementById('jobSearch').value = '';
     document.getElementById('jobCategory').value = 'all';
-    document.getElementById('searchResultMessage').textContent = '';
-    document.querySelectorAll('.job-card').forEach(function(job) {
-        job.style.display = 'block';
+    document.getElementById('jobEmploymentType').value = 'all';
+    document.getElementById('jobLocation').value = 'all';
+    document.querySelectorAll('.filter-btn').forEach(function(button, index) {
+        const selected = index === 0;
+        button.classList.toggle('active', selected);
+        button.setAttribute('aria-pressed', selected ? 'true' : 'false');
     });
-    document.querySelectorAll('.category-block').forEach(function(block) {
-        block.style.display = 'grid';
-        block.classList.add('is-collapsed');
-        const toggle = block.querySelector('.category-toggle');
-        if (toggle) {
-            toggle.textContent = 'Show Jobs';
-            toggle.setAttribute('aria-expanded', 'false');
-        }
-    });
+    searchJobs();
 }
 
 function renderRecommendedJobs(course, skills) {
@@ -2764,9 +2520,24 @@ async function saveProfileFeedbackSummary() {
     }
 }
 
+let careerChatHistory = [];
+
+function appendCareerAiMessage(result, role, content) {
+    const message = document.createElement('div');
+    message.className = 'career-ai-message career-ai-message-' + role;
+    const text = document.createElement('p');
+    text.className = 'career-ai-answer';
+    text.textContent = content;
+    message.appendChild(text);
+    result.appendChild(message);
+    result.scrollTop = result.scrollHeight;
+    return message;
+}
+
 async function askCareerQuickQuestion(questionType) {
     const prompt = document.getElementById('aiPrompt');
-    if (!prompt) return;
+    const sendButton = document.getElementById('careerAiSendButton');
+    if (!prompt || (sendButton && sendButton.disabled)) return;
 
     const questions = {
         'fresh-graduates': 'What current jobs are suitable for fresh graduates?',
@@ -2784,9 +2555,9 @@ async function askCareerQuickQuestion(questionType) {
         }
         if (!auth.profile.course || !auth.profile.skills) {
             const result = document.getElementById('recommendation-result');
-            result.classList.remove('recommendation-warning');
             result.style.display = 'block';
-            result.textContent = 'Please complete your profile with your course and skills, then try this quick question again.';
+            appendCareerAiMessage(result, 'assistant', 'Please complete your profile with your course and skills, then try this quick question again.');
+            careerChatHistory.push({ role: 'assistant', content: 'Please complete your profile with your course and skills, then try this quick question again.' });
             return;
         }
         question = 'Find current jobs that match my course: ' + auth.profile.course + '. My skills are: ' + auth.profile.skills + '.';
@@ -2797,66 +2568,7 @@ async function askCareerQuickQuestion(questionType) {
     askCareerAI();
 }
 
-async function checkJobReadiness(job, card) {
-    const auth = await getCareerAiAuth();
-    if (!auth.authenticated) {
-        showLogin();
-        setAuthError('login', 'Please sign in with your @imcc.edu.ph institutional Google account to check your readiness for this job.');
-        return;
-    }
-    if (!auth.profile.course || !auth.profile.skills) {
-        const result = card.querySelector('.skills-gap-result');
-        card.classList.add('has-skills-gap');
-        result.textContent = 'Please complete your profile with your course and skills, then try again.';
-        card.classList.add('is-open');
-        return;
-    }
-
-    const button = card.querySelector('.readiness-btn');
-    const result = card.querySelector('.skills-gap-result');
-    card.classList.add('has-skills-gap');
-    result.textContent = 'Checking your skills against this role...';
-    card.classList.add('is-open');
-    button.disabled = true;
-    button.textContent = 'Checking...';
-
-    try {
-        const response = await fetch('/api/career-agent', {
-            credentials: 'omit',
-            method: 'POST',
-            headers: auth.headers,
-            body: JSON.stringify({
-                mode: 'skills-gap',
-                job: {
-                    title: job.title || '',
-                    company: job.company || '',
-                    category: job.tag || '',
-                    location: job.location || '',
-                    employmentType: job.employmentType || job.employment_type || '',
-                    description: job.description || ''
-                },
-                profile: auth.profile
-            })
-        });
-        const data = await response.json().catch(function() { return {}; });
-        if (!response.ok) throw new Error(data.error || 'Could not check your readiness. Please try again.');
-
-        const skillsHave = Array.isArray(data.skillsHave) ? data.skillsHave.slice(0, 4) : [];
-        const skillsToBuild = Array.isArray(data.skillsToBuild) ? data.skillsToBuild.slice(0, 4) : [];
-        result.textContent = [
-            data.answer || 'Here is a comparison of your skills with this role.',
-            'Skills you have: ' + (skillsHave.length ? skillsHave.join(', ') : 'No matching skills identified yet.'),
-            'Skills to build: ' + (skillsToBuild.length ? skillsToBuild.join(', ') : 'No specific skill gaps identified.')
-        ].join('\n\n');
-    } catch (error) {
-        result.textContent = error.message || 'Could not check your readiness. Please try again.';
-    } finally {
-        button.disabled = false;
-        button.textContent = 'How ready am I?';
-    }
-}
-
-function showLocalCareerRecommendations(result, prompt, profile, jobs, error) {
+function showLocalCareerRecommendations(prompt, profile, jobs, error) {
     const ignoredTerms = new Set(['a', 'an', 'and', 'are', 'can', 'for', 'fit', 'fits', 'have', 'i', 'in', 'is', 'me', 'my', 'of', 'the', 'to', 'what', 'with', 'want']);
     const terms = (String(prompt || '') + ' ' + (profile.course || '') + ' ' + (profile.skills || '') + ' ' + (profile.experienceSummary || ''))
         .toLowerCase()
@@ -2876,30 +2588,30 @@ function showLocalCareerRecommendations(result, prompt, profile, jobs, error) {
         return b.score - a.score;
     }).slice(0, 3);
 
-    result.replaceChildren();
+    const response = document.createElement('div');
     const notice = document.createElement('p');
     notice.className = 'career-ai-answer';
     notice.textContent = 'Career AI is unavailable right now (' + (error && error.message || 'connection error') + '). Showing local keyword-based matches instead.';
-    result.appendChild(notice);
+    response.appendChild(notice);
 
     if (!filteredTerms.length) {
         const guidance = document.createElement('p');
         guidance.textContent = 'Add your course or specific skills to your question or profile for relevant matches.';
-        result.appendChild(guidance);
-        return;
+        response.appendChild(guidance);
+        return response;
     }
 
     if (!matches.length) {
         const guidance = document.createElement('p');
         guidance.textContent = 'No current job listings matched those terms. Try adding your course, skills, or a role you are interested in.';
-        result.appendChild(guidance);
-        return;
+        response.appendChild(guidance);
+        return response;
     }
 
     const heading = document.createElement('h4');
     heading.className = 'career-ai-matches-title';
     heading.textContent = 'Local matches from current job listings';
-    result.appendChild(heading);
+    response.appendChild(heading);
     const list = document.createElement('ul');
     list.className = 'career-ai-matches';
     matches.forEach(function(match) {
@@ -2920,7 +2632,8 @@ function showLocalCareerRecommendations(result, prompt, profile, jobs, error) {
         }
         list.appendChild(item);
     });
-    result.appendChild(list);
+    response.appendChild(list);
+    return response;
 }
 
 function askCareerAI() {
@@ -2928,6 +2641,8 @@ function askCareerAI() {
     const text = prompt ? prompt.value.trim() : '';
     const result = document.getElementById('recommendation-result');
     const sendButton = document.getElementById('careerAiSendButton');
+    const clearButton = document.querySelector('.career-ai-input-row .ai-clear-btn');
+    if (sendButton && sendButton.disabled) return;
     if (!text) {
         if (prompt) prompt.focus();
         return;
@@ -2951,11 +2666,15 @@ function askCareerAI() {
 
     result.classList.remove('recommendation-warning');
     result.style.display = 'block';
-    result.textContent = 'Thinking through your question...';
+    careerChatHistory.push({ role: 'user', content: text });
+    appendCareerAiMessage(result, 'user', text);
+    const pendingMessage = appendCareerAiMessage(result, 'assistant', 'Thinking...');
     if (sendButton) {
         sendButton.disabled = true;
         sendButton.textContent = 'Thinking...';
     }
+    if (clearButton) clearButton.disabled = true;
+    if (prompt) prompt.value = '';
 
     let fallbackProfile = {};
     getCareerAiAuth().then(function(auth) {
@@ -2966,6 +2685,7 @@ function askCareerAI() {
         headers: auth.headers,
         body: JSON.stringify({
             prompt: text,
+            history: careerChatHistory.slice(0, -1).slice(-8),
             profile: auth.profile,
             jobs: jobs.map(function(job) {
                 return {
@@ -2983,11 +2703,10 @@ function askCareerAI() {
         const data = await response.json().catch(function() { return {}; });
         if (!response.ok) throw new Error(data.error || 'Career AI is temporarily unavailable.');
 
-        result.replaceChildren();
-        const answer = document.createElement('p');
-        answer.className = 'career-ai-answer';
-        answer.textContent = data.answer || 'I could not form an answer. Please try asking another way.';
-        result.appendChild(answer);
+        const answerText = data.answer || 'I could not form an answer. Please try asking another way.';
+        const answer = pendingMessage.querySelector('.career-ai-answer');
+        answer.textContent = answerText;
+        careerChatHistory.push({ role: 'assistant', content: answerText });
 
         const matches = Array.isArray(data.recommendations) ? data.recommendations : [];
         const matchItems = matches.filter(function(match) {
@@ -2997,7 +2716,7 @@ function askCareerAI() {
             const heading = document.createElement('h4');
             heading.className = 'career-ai-matches-title';
             heading.textContent = 'Openings to explore';
-            result.appendChild(heading);
+            pendingMessage.appendChild(heading);
 
             const list = document.createElement('ul');
             list.className = 'career-ai-matches';
@@ -3026,17 +2745,21 @@ function askCareerAI() {
                 }
                 list.appendChild(item);
             });
-            result.appendChild(list);
+            pendingMessage.appendChild(list);
         }
+        result.scrollTop = result.scrollHeight;
         document.getElementById('ai').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }).catch(function(error) {
-        result.classList.add('recommendation-warning');
-        showLocalCareerRecommendations(result, text, fallbackProfile, jobs, error);
+        const localResponse = showLocalCareerRecommendations(text, fallbackProfile, jobs, error);
+        pendingMessage.replaceChildren(localResponse);
+        careerChatHistory.push({ role: 'assistant', content: 'Career AI is unavailable. Showing local keyword-based matches instead.' });
+        result.scrollTop = result.scrollHeight;
     }).finally(function() {
         if (sendButton) {
             sendButton.disabled = false;
             sendButton.textContent = 'Send';
         }
+        if (clearButton) clearButton.disabled = false;
     });
 }
 
@@ -3065,300 +2788,12 @@ function clearRecommendation() {
     const prompt = document.getElementById('aiPrompt');
     if (prompt) prompt.value = '';
     const result = document.getElementById('recommendation-result');
+    if (!result) return;
     result.style.display = 'none';
     result.replaceChildren();
     result.classList.remove('recommendation-warning');
+    careerChatHistory = [];
 }
-
-let interviewPracticeState = null;
-let interviewPracticeTrigger = null;
-
-async function startInterviewPractice(job, trigger) {
-    const auth = await getCareerAiAuth();
-    if (!auth.authenticated) {
-        showLogin();
-        setAuthError('login', 'Please sign in with your @imcc.edu.ph institutional Google account to practice interviews.');
-        return;
-    }
-
-    const modal = document.getElementById('interviewModal');
-    const panel = document.getElementById('interviewQuestionPanel');
-    const label = document.getElementById('interviewJobLabel');
-    const status = document.getElementById('interviewStatus');
-    const feedback = document.getElementById('interviewFeedback');
-    interviewPracticeTrigger = trigger;
-    interviewPracticeState = null;
-    panel.hidden = true;
-    feedback.replaceChildren();
-    document.getElementById('interviewNextButton').hidden = true;
-    document.getElementById('interviewSubmitButton').disabled = true;
-    label.textContent = (job.title || 'This role') + ' at ' + (job.company || 'the selected company');
-    status.textContent = 'Preparing five interview questions...';
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden', 'false');
-    document.getElementById('interviewCloseButton').focus();
-
-    try {
-        const response = await fetch('/api/career-agent', {
-            credentials: 'omit',
-            method: 'POST',
-            headers: auth.headers,
-            body: JSON.stringify({
-                mode: 'interview',
-                step: 'start',
-                jobTitle: job.title || '',
-                company: job.company || ''
-            })
-        });
-        const data = await response.json().catch(function() { return {}; });
-        if (!response.ok) throw new Error(data.error || 'Interview practice could not start. Please try again.');
-        if (!Array.isArray(data.questions) || data.questions.length !== 5 ||
-            data.questions.some(function(question) { return typeof question !== 'string' || !question.trim(); })) {
-            throw new Error('Interview questions could not be loaded. Please try again.');
-        }
-
-        interviewPracticeState = {
-            headers: auth.headers,
-            questions: data.questions.slice(0, 5),
-            index: 0
-        };
-        status.textContent = '';
-        panel.hidden = false;
-        renderInterviewQuestion();
-    } catch (error) {
-        status.textContent = error.message || 'Interview practice could not start. Please try again.';
-        document.getElementById('interviewCloseButton').focus();
-    }
-}
-
-function renderInterviewQuestion() {
-    if (!interviewPracticeState) return;
-    const index = interviewPracticeState.index;
-    const answer = document.getElementById('interviewAnswer');
-    document.getElementById('interviewProgress').textContent = 'Question ' + (index + 1) + ' of ' + interviewPracticeState.questions.length;
-    document.getElementById('interviewQuestion').textContent = interviewPracticeState.questions[index];
-    answer.value = '';
-    answer.disabled = false;
-    document.getElementById('interviewCharacterCount').textContent = '0 / 800';
-    document.getElementById('interviewSubmitButton').disabled = false;
-    document.getElementById('interviewSubmitButton').hidden = false;
-    document.getElementById('interviewNextButton').hidden = true;
-    document.getElementById('interviewFeedback').replaceChildren();
-    document.getElementById('interviewStatus').textContent = '';
-    answer.focus();
-}
-
-function updateInterviewCharacterCount(textarea) {
-    document.getElementById('interviewCharacterCount').textContent = textarea.value.length + ' / 800';
-}
-
-function appendInterviewFeedbackList(container, headingText, entries) {
-    const heading = document.createElement('h5');
-    heading.textContent = headingText;
-    container.appendChild(heading);
-    if (!entries.length) {
-        const empty = document.createElement('p');
-        empty.textContent = 'No specific points to list.';
-        container.appendChild(empty);
-        return;
-    }
-    const list = document.createElement('ul');
-    entries.slice(0, 4).forEach(function(entry) {
-        const item = document.createElement('li');
-        item.textContent = entry;
-        list.appendChild(item);
-    });
-    container.appendChild(list);
-}
-
-async function submitInterviewAnswer() {
-    if (!interviewPracticeState) return;
-    const answer = document.getElementById('interviewAnswer');
-    const text = answer.value.trim();
-    const status = document.getElementById('interviewStatus');
-    const submit = document.getElementById('interviewSubmitButton');
-    if (!text) {
-        status.textContent = 'Write an answer before requesting feedback.';
-        answer.focus();
-        return;
-    }
-    if (text.length > 800) {
-        status.textContent = 'Keep your answer to 800 characters or fewer.';
-        return;
-    }
-
-    status.textContent = 'Reviewing your answer...';
-    submit.disabled = true;
-    try {
-        const response = await fetch('/api/career-agent', {
-            credentials: 'omit',
-            method: 'POST',
-            headers: interviewPracticeState.headers,
-            body: JSON.stringify({
-                mode: 'interview',
-                step: 'feedback',
-                question: interviewPracticeState.questions[interviewPracticeState.index],
-                answer: text
-            })
-        });
-        const data = await response.json().catch(function() { return {}; });
-        if (!response.ok) throw new Error(data.error || 'Feedback could not be loaded. Please try again.');
-        if (!Number.isInteger(data.score) || data.score < 1 || data.score > 5 ||
-            !Array.isArray(data.strengths) || !Array.isArray(data.improvements) ||
-            typeof data.sampleAnswer !== 'string') {
-            throw new Error('Interview feedback was incomplete. Please try again.');
-        }
-
-        const result = document.getElementById('interviewFeedback');
-        result.replaceChildren();
-        const score = document.createElement('p');
-        score.className = 'interview-score';
-        score.textContent = 'Score: ' + data.score + ' / 5';
-        result.appendChild(score);
-        appendInterviewFeedbackList(result, 'Strengths', data.strengths);
-        appendInterviewFeedbackList(result, 'Improvements', data.improvements);
-        const sampleHeading = document.createElement('h5');
-        sampleHeading.textContent = 'Sample answer';
-        result.appendChild(sampleHeading);
-        const sample = document.createElement('p');
-        sample.textContent = data.sampleAnswer;
-        result.appendChild(sample);
-        const disclaimer = document.createElement('p');
-        disclaimer.className = 'interview-disclaimer';
-        disclaimer.textContent = 'Practice feedback may be imperfect; verify important advice with a career adviser.';
-        result.appendChild(disclaimer);
-
-        answer.disabled = true;
-        submit.hidden = true;
-        document.getElementById('interviewNextButton').textContent =
-            interviewPracticeState.index === interviewPracticeState.questions.length - 1 ? 'Finish practice' : 'Next question';
-        document.getElementById('interviewNextButton').hidden = false;
-        status.textContent = '';
-    } catch (error) {
-        status.textContent = error.message || 'Feedback could not be loaded. Please try again.';
-    } finally {
-        if (!submit.hidden) submit.disabled = false;
-    }
-}
-
-function advanceInterview() {
-    if (!interviewPracticeState) return closeInterviewModal();
-    if (interviewPracticeState.index >= interviewPracticeState.questions.length - 1) {
-        closeInterviewModal();
-        return;
-    }
-    interviewPracticeState.index += 1;
-    renderInterviewQuestion();
-}
-
-function closeInterviewModal() {
-    const modal = document.getElementById('interviewModal');
-    if (!modal) return;
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden', 'true');
-    interviewPracticeState = null;
-    if (interviewPracticeTrigger && document.contains(interviewPracticeTrigger)) {
-        interviewPracticeTrigger.focus();
-    }
-    interviewPracticeTrigger = null;
-}
-
-let coverLetterState = null;
-let coverLetterTrigger = null;
-
-async function draftApplicationMessage(job, trigger) {
-    const auth = await getCareerAiAuth();
-    if (!auth.authenticated) {
-        showLogin();
-        setAuthError('login', 'Please sign in with your @imcc.edu.ph institutional Google account to draft an application message.');
-        return;
-    }
-
-    coverLetterTrigger = trigger;
-    coverLetterState = { job: job, profile: auth.profile, headers: auth.headers };
-    const modal = document.getElementById('coverLetterModal');
-    document.getElementById('coverLetterJobLabel').textContent =
-        (job.title || 'This role') + ' at ' + (job.company || 'the selected company');
-    document.getElementById('coverLetterDraft').value = '';
-    document.getElementById('coverLetterStatus').textContent = '';
-    document.getElementById('coverLetterCopyButton').disabled = true;
-    document.getElementById('coverLetterRegenerateButton').disabled = true;
-    modal.classList.add('show');
-    modal.setAttribute('aria-hidden', 'false');
-    document.getElementById('coverLetterCloseButton').focus();
-    await requestCoverLetterDraft();
-}
-
-async function requestCoverLetterDraft() {
-    const state = coverLetterState;
-    if (!state) return;
-    const status = document.getElementById('coverLetterStatus');
-    const copyButton = document.getElementById('coverLetterCopyButton');
-    const regenerateButton = document.getElementById('coverLetterRegenerateButton');
-    status.textContent = 'Preparing your application message...';
-    copyButton.disabled = true;
-    regenerateButton.disabled = true;
-
-    try {
-        const response = await fetch('/api/career-agent', {
-            credentials: 'omit',
-            method: 'POST',
-            headers: state.headers,
-            body: JSON.stringify({
-                mode: 'cover-letter',
-                job: state.job,
-                profile: state.profile
-            })
-        });
-        const data = await response.json().catch(function() { return {}; });
-        if (!response.ok) throw new Error(data.error || 'The application message could not be drafted. Please try again.');
-        if (typeof data.draft !== 'string') {
-            throw new Error('The application message was incomplete. Please try again.');
-        }
-        const wordCount = data.draft.trim().split(/\s+/).filter(Boolean).length;
-        if (wordCount < 120 || wordCount > 180) {
-            throw new Error('The application message was outside the required length. Please regenerate it.');
-        }
-        if (coverLetterState !== state) return;
-        document.getElementById('coverLetterDraft').value = data.draft;
-        status.textContent = '';
-        copyButton.disabled = false;
-        regenerateButton.disabled = false;
-    } catch (error) {
-        if (coverLetterState !== state) return;
-        status.textContent = error.message || 'The application message could not be drafted. Please try again.';
-        regenerateButton.disabled = false;
-    }
-}
-
-function regenerateCoverLetter() {
-    requestCoverLetterDraft();
-}
-
-async function copyCoverLetterDraft() {
-    const draft = document.getElementById('coverLetterDraft').value.trim();
-    const status = document.getElementById('coverLetterStatus');
-    if (!draft) return;
-    try {
-        await navigator.clipboard.writeText(draft);
-        status.textContent = 'Draft copied. Review and edit it before sending.';
-    } catch (error) {
-        status.textContent = 'Could not copy automatically. Select the draft text and copy it manually.';
-    }
-}
-
-function closeCoverLetterModal() {
-    const modal = document.getElementById('coverLetterModal');
-    if (!modal) return;
-    modal.classList.remove('show');
-    modal.setAttribute('aria-hidden', 'true');
-    coverLetterState = null;
-    if (coverLetterTrigger && document.contains(coverLetterTrigger)) {
-        coverLetterTrigger.focus();
-    }
-    coverLetterTrigger = null;
-}
-
 
 /* AI JOB RECOMMENDATION */
 
