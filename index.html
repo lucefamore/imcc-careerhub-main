@@ -112,14 +112,14 @@
             <div class="career-ai-heading">
                 <span class="ai-spark">🤖</span>
                 <div>
-                    <span class="ai-label">Ask IMCC Career AI</span>
-                    <p>Tell us what you want to find.</p>
+                    <span class="ai-label">IMCC Career Chatbot</span>
+                    <p>Ask questions about jobs, skills, applications, and career planning.</p>
                 </div>
             </div>
             <div class="career-ai-input-row">
-                <input id="aiPrompt" type="text" placeholder="What jobs fit my skills?" aria-label="Ask IMCC Career AI" onkeydown="if(event.key==='Enter'){event.preventDefault();askCareerAI();}">
+                <input id="aiPrompt" type="text" placeholder="Message IMCC Career Chatbot..." aria-label="Message IMCC Career Chatbot" onkeydown="if(event.key==='Enter'){event.preventDefault();askCareerAI();}">
                 <button class="search-btn" id="careerAiSendButton" type="button" onclick="askCareerAI()">Send</button>
-                <button class="ai-clear-btn" type="button" onclick="clearRecommendation()">Clear</button>
+                <button class="ai-clear-btn" type="button" onclick="clearRecommendation()">New chat</button>
             </div>
             <div class="career-ai-quick-questions" role="group" aria-label="Quick career questions">
                 <button type="button" onclick="askCareerQuickQuestion('fresh-graduates')">Jobs for fresh graduates</button>
@@ -127,13 +127,13 @@
                 <button type="button" onclick="askCareerQuickQuestion('iligan')">Jobs in Iligan</button>
                 <button type="button" onclick="askCareerQuickQuestion('my-course')">Jobs for my course</button>
             </div>
-            <p class="career-ai-hint">Try: “I know HTML and Python” or “I want a healthcare job.”</p>
-            <div id="recommendation-result" role="status" aria-live="polite"></div>
+            <p class="career-ai-hint">Try: “What jobs can I apply for as a fresh graduate?”</p>
+            <div id="recommendation-result" class="career-chat-history" role="log" aria-live="polite" aria-label="Chat conversation"></div>
         </div>
 
         <div class="ai-content">
 
-            <h2>🤖 AI Career Agent</h2>
+            <h2>🤖 Your IMCC Career Chatbot</h2>
 
             <p>
                     Explore matching roles, understand why they fit, and identify the skills that can strengthen your next application.
@@ -2923,6 +2923,8 @@ function showLocalCareerRecommendations(result, prompt, profile, jobs, error) {
     result.appendChild(list);
 }
 
+window.careerChatHistory = window.careerChatHistory || [];
+
 function askCareerAI() {
     const prompt = document.getElementById('aiPrompt');
     const text = prompt ? prompt.value.trim() : '';
@@ -2950,8 +2952,16 @@ function askCareerAI() {
     }).slice(0, 80);
 
     result.classList.remove('recommendation-warning');
-    result.style.display = 'block';
-    result.textContent = 'Thinking through your question...';
+    result.style.display = 'flex';
+    const userMessage = document.createElement('div');
+    userMessage.className = 'career-chat-message career-chat-user';
+    userMessage.textContent = text;
+    result.appendChild(userMessage);
+    const botMessage = document.createElement('div');
+    botMessage.className = 'career-chat-message career-chat-bot';
+    botMessage.textContent = 'Thinking...';
+    result.appendChild(botMessage);
+    result.scrollTop = result.scrollHeight;
     if (sendButton) {
         sendButton.disabled = true;
         sendButton.textContent = 'Thinking...';
@@ -2966,6 +2976,7 @@ function askCareerAI() {
         headers: auth.headers,
         body: JSON.stringify({
             prompt: text,
+            history: window.careerChatHistory.slice(-8),
             profile: auth.profile,
             jobs: jobs.map(function(job) {
                 return {
@@ -2983,11 +2994,14 @@ function askCareerAI() {
         const data = await response.json().catch(function() { return {}; });
         if (!response.ok) throw new Error(data.error || 'Career AI is temporarily unavailable.');
 
-        result.replaceChildren();
+        botMessage.replaceChildren();
         const answer = document.createElement('p');
         answer.className = 'career-ai-answer';
         answer.textContent = data.answer || 'I could not form an answer. Please try asking another way.';
-        result.appendChild(answer);
+        botMessage.appendChild(answer);
+        window.careerChatHistory.push({ role: 'user', content: text });
+        window.careerChatHistory.push({ role: 'assistant', content: answer.textContent });
+        window.careerChatHistory = window.careerChatHistory.slice(-8);
 
         const matches = Array.isArray(data.recommendations) ? data.recommendations : [];
         const matchItems = matches.filter(function(match) {
@@ -2997,7 +3011,7 @@ function askCareerAI() {
             const heading = document.createElement('h4');
             heading.className = 'career-ai-matches-title';
             heading.textContent = 'Openings to explore';
-            result.appendChild(heading);
+            botMessage.appendChild(heading);
 
             const list = document.createElement('ul');
             list.className = 'career-ai-matches';
@@ -3026,12 +3040,14 @@ function askCareerAI() {
                 }
                 list.appendChild(item);
             });
-            result.appendChild(list);
+            botMessage.appendChild(list);
         }
-        document.getElementById('ai').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        result.scrollTop = result.scrollHeight;
     }).catch(function(error) {
-        result.classList.add('recommendation-warning');
-        showLocalCareerRecommendations(result, text, fallbackProfile, jobs, error);
+        botMessage.classList.add('career-chat-error');
+        botMessage.textContent = '';
+        showLocalCareerRecommendations(botMessage, text, fallbackProfile, jobs, error);
+        result.scrollTop = result.scrollHeight;
     }).finally(function() {
         if (sendButton) {
             sendButton.disabled = false;
@@ -3068,6 +3084,7 @@ function clearRecommendation() {
     result.style.display = 'none';
     result.replaceChildren();
     result.classList.remove('recommendation-warning');
+    window.careerChatHistory = [];
 }
 
 let interviewPracticeState = null;
