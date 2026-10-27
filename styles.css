@@ -1553,27 +1553,6 @@ nav {
 .job-card.is-open .job-description { max-height: 200px; opacity: 1; }
 .job-card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 .job-card-actions .apply-btn, .job-card-actions .application-track-btn { flex: 1 1 140px; width: auto; min-width: 0; margin-top: 0; padding: 10px 8px; font-size: 12px; }
-.interview-modal { z-index: 270; }
-.interview-card { width: min(620px, 100%); }
-.interview-question-panel { display: grid; gap: 10px; margin-top: 20px; }
-.interview-progress, .interview-character-count, .interview-disclaimer { color: var(--gray); font-size: 12px; }
-.interview-question-panel h4 { color: var(--primary-dark); line-height: 1.5; }
-.interview-question-panel textarea { width: 100%; min-height: 120px; padding: 12px; border: 1px solid var(--border); border-radius: 9px; resize: vertical; color: var(--text); }
-.interview-question-panel textarea:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
-.interview-feedback { margin-top: 18px; color: var(--text); line-height: 1.6; overflow-wrap: anywhere; }
-.interview-feedback h5 { margin: 12px 0 4px; color: var(--primary-dark); }
-.interview-feedback ul { padding-left: 20px; }
-.interview-feedback .interview-score { font-weight: 800; color: var(--primary-dark); }
-.interview-disclaimer { margin-top: 12px; }
-#interviewStatus { color: var(--gray); }
-.cover-letter-modal { z-index: 280; }
-.cover-letter-card { width: min(680px, 100%); }
-.cover-letter-draft-label { display: block; margin: 18px 0 6px; color: var(--text); font-weight: 700; }
-.cover-letter-draft { box-sizing: border-box; width: 100%; min-height: 220px; padding: 12px; border: 1px solid var(--border); border-radius: 9px; color: var(--text); line-height: 1.6; resize: vertical; }
-.cover-letter-draft:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
-.cover-letter-disclaimer { margin-top: 10px; color: var(--gray); font-size: 12px; }
-.cover-letter-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
-.cover-letter-actions button:disabled { cursor: wait; opacity: 0.7; }
 .ai-section { padding: 44px 6vw; background: #f9d8e9; }
 .ai-container { max-width: none; padding: 28px; border: 1px solid rgba(142, 11, 76, 0.12); border-radius: 16px; box-shadow: none; }
 .ai-content h2 { color: var(--primary-dark); font-size: 25px; }
