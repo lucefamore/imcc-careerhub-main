@@ -40,59 +40,31 @@
 <div class="nav-scrim" id="navScrim" onclick="closeMobileNav()"></div>
 
 <section class="hero" id="home">
-    <p class="hero-kicker">Verified career opportunities for the IMCC community</p>
-    <h1>Find your next career opportunity.</h1>
-    <p>Explore direct openings across healthcare, technology, business, education, and more.</p>
+    <p class="hero-kicker">IMCC Careers | AI-Powered Job Recommendation System</p>
+    <h1>Find the right job for your career.</h1>
+    <p>Personalized opportunities for IMCC students and alumni, powered by your profile, skills, and goals.</p>
     <div class="search-box">
-        <div class="job-search-field">
-            <span aria-hidden="true">⌕</span>
-            <input type="search" id="jobSearch" placeholder="Search job title, employer, or skill..." aria-label="Search jobs" oninput="handleSearchInput()" onkeydown="if(event.key==='Enter'){event.preventDefault();searchJobs();}">
-        </div>
-        <select id="jobEmploymentType" aria-label="Filter by employment type" onchange="searchJobs()">
-            <option value="all">All employment types</option>
-            <option value="full-time">Full-time</option>
-            <option value="part-time">Part-time</option>
-            <option value="contract">Contract</option>
-            <option value="internship">Internship</option>
+        <input type="text" id="jobSearch" placeholder="Search title, company, or skill..." oninput="handleSearchInput()" onkeydown="if(event.key==='Enter'){event.preventDefault();searchJobs();}">
+        <select id="jobCategory" onchange="searchJobs()">
+            <option value="all">All Categories</option>
+            <option value="IT">Information Technology</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Business">Business</option>
+            <option value="CCJE">CCJE</option>
+            <option value="Social Work">Social Work</option>
+            <option value="CHTM">CHTM</option>
+            <option value="Education">Education</option>
         </select>
-        <select id="jobLocation" aria-label="Filter by location" onchange="searchJobs()">
-            <option value="all">All locations</option>
-        </select>
-        <input type="hidden" id="jobCategory" value="all">
-        <div class="search-box-note">
-            <span>Every listing links directly to the employer or job-site application.</span>
-            <button class="clear-btn" type="button" onclick="clearSearch()">Reset search</button>
-        </div>
+        <button class="search-btn" onclick="searchJobs()">Search Jobs</button>
+        <button class="clear-btn" onclick="clearSearch()">Clear</button>
+        <div id="searchResultMessage" class="search-result-message"></div>
     </div>
 </section>
 
-<section class="statistics" aria-label="Job directory statistics">
-    <div class="stat-card"><h2 id="activeJobCount">0</h2><p>Active career listings</p></div>
-    <div class="stat-card"><h2 id="academicProgramCount">7</h2><p>Academic programs</p></div>
-    <div class="stat-card"><h2 id="directUrlPercentage">100%</h2><p>Direct job links</p></div>
-    <div class="stat-card"><h2 id="savedJobCount">0</h2><p>Bookmarked positions</p></div>
-</section>
-
-<section class="jobs-section" id="jobs">
-    <div class="section-title">
-        <div>
-            <span class="section-kicker">Explore openings</span>
-            <h2>Direct Job Directory</h2>
-            <p>Filter vacancies by academic program and find your next step.</p>
-        </div>
-        <span id="searchResultMessage" class="search-result-message">Showing all listings</span>
-    </div>
-    <div class="filters" role="group" aria-label="Filter jobs by academic program">
-        <button class="filter-btn active" data-category="all" type="button" aria-pressed="true" onclick="filterJobs('all', event)">All Programs</button>
-        <button class="filter-btn" data-category="Healthcare" type="button" aria-pressed="false" onclick="filterJobs('Healthcare', event)">Healthcare &amp; Nursing</button>
-        <button class="filter-btn" data-category="IT" type="button" aria-pressed="false" onclick="filterJobs('IT', event)">IT &amp; Computer Studies</button>
-        <button class="filter-btn" data-category="Business" type="button" aria-pressed="false" onclick="filterJobs('Business', event)">Business &amp; Accountancy</button>
-        <button class="filter-btn" data-category="Education" type="button" aria-pressed="false" onclick="filterJobs('Education', event)">Teacher Education</button>
-        <button class="filter-btn" data-category="CCJE" type="button" aria-pressed="false" onclick="filterJobs('CCJE', event)">Criminology (CCJE)</button>
-        <button class="filter-btn" data-category="Social Work" type="button" aria-pressed="false" onclick="filterJobs('Social Work', event)">Social Work</button>
-        <button class="filter-btn" data-category="CHTM" type="button" aria-pressed="false" onclick="filterJobs('CHTM', event)">Hospitality &amp; Tourism</button>
-    </div>
-    <div class="job-container" id="jobContainer"></div>
+<section class="statistics">
+    <div class="stat-card"><h2>150+</h2><p>Available Job Opportunities</p></div>
+    <div class="stat-card"><h2>500+</h2><p>Students and Alumni</p></div>
+    <div class="stat-card"><h2>30+</h2><p>Career Partners</p></div>
 </section>
 
 <section class="recommended-section" id="recommended">
@@ -106,33 +78,52 @@
     <div id="recommendedJobs" class="recommended-grid"></div>
 </section>
 
+<section class="jobs-section" id="jobs">
+    <div class="section-title">
+        <h2>Latest Job Opportunities</h2>
+        <p>Explore jobs that match your education and skills.</p>
+    </div>
+    <div class="jobs-layout">
+        <aside class="course-sidebar" aria-label="Filter jobs by course">
+            <span class="course-sidebar-title">Courses</span>
+            <div class="filters">
+                <button class="filter-btn active" onclick="filterJobs('all', event)">All Jobs</button>
+                <button class="filter-btn" onclick="filterJobs('IT', event)">IT</button>
+                <button class="filter-btn" onclick="filterJobs('Healthcare', event)">Healthcare</button>
+                <button class="filter-btn" onclick="filterJobs('Business', event)">Business</button>
+                <button class="filter-btn" onclick="filterJobs('CCJE', event)">CCJE</button>
+                <button class="filter-btn" onclick="filterJobs('Social Work', event)">Social Work</button>
+                <button class="filter-btn" onclick="filterJobs('CHTM', event)">CHTM</button>
+                <button class="filter-btn" onclick="filterJobs('Education', event)">Education</button>
+            </div>
+        </aside>
+        <div class="job-container" id="jobContainer"></div>
+    </div>
+</section>
+
+
 <!-- AI JOB RECOMMENDATION -->
 
 <section class="ai-section" id="ai">
 
     <div class="ai-container">
 
-        <div class="career-ai-card">
+        <div class="career-ai-card career-agent-card">
             <div class="career-ai-heading">
                 <span class="ai-spark">🤖</span>
                 <div>
-                    <span class="ai-label">IMCC Career AI Chat</span>
-                    <p>Ask about careers, job openings, skills, or applications.</p>
+                    <span class="ai-label">IMCC Career AI Agent</span>
+                    <p>Matches real openings in the job feed to your saved profile.</p>
                 </div>
             </div>
-            <div id="recommendation-result" class="career-ai-messages" role="log" aria-label="Career AI conversation" aria-live="polite" aria-relevant="additions text"></div>
-            <div class="career-ai-input-row">
-                <input id="aiPrompt" type="text" placeholder="Ask a question or follow up..." aria-label="Message IMCC Career AI" onkeydown="if(event.key==='Enter'){event.preventDefault();askCareerAI();}">
-                <button class="search-btn" id="careerAiSendButton" type="button" onclick="askCareerAI()">Send</button>
-                <button class="ai-clear-btn" type="button" onclick="clearRecommendation()">New chat</button>
+            <div id="careerAgentProfile" class="career-agent-profile" aria-live="polite"></div>
+            <div class="career-agent-actions">
+                <button class="search-btn" id="careerAgentButton" type="button" onclick="runCareerAgent()">Match me to jobs</button>
+                <button class="ai-clear-btn" id="careerAgentClearButton" type="button" onclick="clearCareerAgent()">Clear</button>
             </div>
-            <div class="career-ai-quick-questions" role="group" aria-label="Quick career questions">
-                <button type="button" onclick="askCareerQuickQuestion('fresh-graduates')">Jobs for fresh graduates</button>
-                <button type="button" onclick="askCareerQuickQuestion('remote')">Remote jobs</button>
-                <button type="button" onclick="askCareerQuickQuestion('iligan')">Jobs in Iligan</button>
-                <button type="button" onclick="askCareerQuickQuestion('my-course')">Jobs for my course</button>
-            </div>
-            <p class="career-ai-hint">Try: “I know HTML and Python” or “I want a healthcare job.”</p>
+            <p id="careerAgentStatus" class="career-agent-status" role="status" aria-live="polite"></p>
+            <div id="careerAgentResults" class="career-agent-results" aria-live="polite"></div>
+            <p class="career-ai-hint">Matches are based on the course, skills and experience in your profile. Always verify a posting on the employer's page before applying.</p>
         </div>
 
         <div class="ai-content">
@@ -299,6 +290,20 @@
                     <span>Continue with Google</span>
                 </button>
                 <p class="form-error" id="loginError"></p>
+                <button class="auth-admin-link" type="button" onclick="showAdminLogin()">Admin sign in</button>
+            </form>
+        </div>
+
+        <div class="auth-view" id="adminLoginView">
+            <h3>IMCC-Careers Admin</h3>
+            <p class="auth-note">Use your authorized institutional Google account to manage the marketplace.</p>
+            <form class="auth-form">
+                <button id="admin-google-login" class="google-signin-btn" type="button" aria-label="Admin sign in with Google">
+                    <span class="google-mark" aria-hidden="true">G</span>
+                    <span>Continue as Admin</span>
+                </button>
+                <p class="form-error" id="adminLoginError"></p>
+                <button class="auth-admin-link" type="button" onclick="showLogin()">Back to user sign in</button>
             </form>
         </div>
 
@@ -618,6 +623,7 @@ async function restoreSupabaseSession() {
     sessionRestoreInProgress = true;
     document.body.classList.add('auth-locked');
     openAuthModal();
+    const adminLoginRequested = sessionStorage.getItem('imcc_admin_login_requested') === '1';
     if (!hasSupabaseConfig()) {
         sessionRestoreInProgress = false;
         return setAuthError('login', 'Account service is not configured. Please contact support.');
@@ -634,12 +640,19 @@ async function restoreSupabaseSession() {
         }
         if (!session || !session.user || !isInstitutionalEmail(session.user.email)) {
             await window.supabaseClient.auth.signOut();
-            return setAuthError('login', getInstitutionalEmailError(session && session.user ? session.user.email : ''));
+            if (adminLoginRequested) showAdminLogin();
+            return setAuthError(
+                adminLoginRequested ? 'adminLogin' : 'login',
+                getInstitutionalEmailError(session && session.user ? session.user.email : '', adminLoginRequested)
+            );
         }
 
+        sessionStorage.removeItem('imcc_admin_login_requested');
+
         /*
-         * Verify the role and load profile data together, then route admins to
-         * the admin dashboard and regular users to the marketplace.
+         * Do not make the user wait for several database requests one after another.
+         * Show the marketplace immediately for normal users, while role/profile/jobs
+         * are loaded in parallel in the background.
          */
         const userMetadata = session.user.user_metadata || {};
         const fallbackProfile = {
@@ -648,10 +661,19 @@ async function restoreSupabaseSession() {
             fullname: userMetadata.full_name || userMetadata.name || session.user.email.split('@')[0]
         };
 
+        // Let regular users enter the marketplace while profile and role data load.
+        if (!adminLoginRequested) goToMarketplaceHome();
+
         const [isAdmin, existingProfile] = await Promise.all([
             supabaseIsAdmin(session.user.id),
             supabaseGetProfile(session.user.id)
         ]);
+
+        if (adminLoginRequested && !isAdmin) {
+            await window.supabaseClient.auth.signOut();
+            showAdminLogin();
+            return setAuthError('adminLogin', 'This institutional account is not authorized for admin access.');
+        }
 
         let profile = existingProfile;
         if (!profile) {
@@ -680,13 +702,6 @@ async function restoreSupabaseSession() {
         }));
         updateNavAuthState();
 
-        if (isAdmin) {
-            await showAdminDashboard();
-            return;
-        }
-
-        goToMarketplaceHome();
-
         // These are independent operations; run them together so login is faster.
         const backgroundLoads = [
             Promise.resolve().then(function() { getManagedJobs(); }),
@@ -695,6 +710,9 @@ async function restoreSupabaseSession() {
         ];
         await Promise.allSettled(backgroundLoads);
 
+        if (isAdmin) {
+            showAdminDashboard();
+        }
     } catch (error) {
         console.warn('Supabase session restore failed:', error.message);
         if (document.body.classList.contains('auth-locked')) {
@@ -747,7 +765,9 @@ function closeAuthModal() {
 
 function showAuthView(view) {
     const loginView = document.getElementById('loginView');
+    const adminLoginView = document.getElementById('adminLoginView');
     if (loginView) loginView.classList.toggle('active', view === 'login');
+    if (adminLoginView) adminLoginView.classList.toggle('active', view === 'admin');
 }
 
 function updateNavAuthState() {
@@ -826,6 +846,12 @@ async function openUserProfile() {
     await openUserDashboard();
     if (document.body.classList.contains('auth-locked')) return;
     editProfile();
+}
+
+function showAdminLogin() {
+    showAuthView('admin');
+    openAuthModal();
+    clearAuthErrors('adminLogin');
 }
 
 const MANAGED_JOBS_STORAGE_KEY = 'imcc_managed_jobs';
@@ -1252,6 +1278,7 @@ async function logoutAdmin() {
     }
     localStorage.removeItem('imcc_admin_session');
     localStorage.removeItem('imcc_user');
+    if (typeof onCareerProfileChanged === 'function') onCareerProfileChanged();
     document.body.classList.add('auth-locked');
     document.getElementById('adminDashboard').style.display = 'none';
     document.getElementById('dashboard').style.display = 'none';
@@ -1338,12 +1365,16 @@ function isInstitutionalEmail(email) {
     return /^[^@\s]+@imcc\.edu\.ph$/i.test(String(email || '').trim());
 }
 
-function getInstitutionalEmailError(email) {
+function getInstitutionalEmailError(email, isAdminAttempt) {
     const trimmed = String(email || '').trim();
     if (!trimmed) {
-        return 'Please sign in with your @imcc.edu.ph institutional Google account.';
+        return isAdminAttempt
+            ? 'Admin access requires an @imcc.edu.ph institutional Google account.'
+            : 'Please sign in with your @imcc.edu.ph institutional Google account.';
     }
-    return 'Only @imcc.edu.ph institutional Google accounts can access IMCC Careers.';
+    return isAdminAttempt
+        ? 'This account is not authorized for admin access. Please use an @imcc.edu.ph institutional Google account.'
+        : 'Only @imcc.edu.ph institutional Google accounts can access IMCC Careers.';
 }
 
 async function handleLoginSubmit(event) {
@@ -1385,7 +1416,7 @@ async function signInWithGoogle(triggerButton) {
         const message = String(error.message || '').toLowerCase().includes('provider is not enabled')
             ? 'Google SSO is not enabled in Supabase. Please enable the Google provider, then try again.'
             : 'Institutional sign-in is temporarily unavailable. Please try again.';
-        setAuthError('login', message);
+        setAuthError(sessionStorage.getItem('imcc_admin_login_requested') === '1' ? 'adminLogin' : 'login', message);
         if (triggerButton) {
             triggerButton.disabled = false;
             if (triggerButton.dataset.originalLabel) triggerButton.innerHTML = triggerButton.dataset.originalLabel;
@@ -1395,10 +1426,20 @@ async function signInWithGoogle(triggerButton) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const googleLoginButton = document.getElementById('google-login');
+    const adminGoogleLoginButton = document.getElementById('admin-google-login');
+    const continueLoginButton = document.getElementById('continueVerifiedLogin');
+    const adminContinueLoginButton = document.getElementById('adminContinueVerifiedLogin');
 
     if (googleLoginButton) {
         googleLoginButton.addEventListener('click', function() {
+            sessionStorage.removeItem('imcc_admin_login_requested');
             signInWithGoogle(googleLoginButton);
+        });
+    }
+    if (adminGoogleLoginButton) {
+        adminGoogleLoginButton.addEventListener('click', function() {
+            sessionStorage.setItem('imcc_admin_login_requested', '1');
+            signInWithGoogle(adminGoogleLoginButton);
         });
     }
 });
@@ -1606,6 +1647,7 @@ async function showDashboard(cachedProfile, cachedEmail, sessionUserId) {
         }
     };
     localStorage.setItem('imcc_user', JSON.stringify(stored));
+    if (typeof onCareerProfileChanged === 'function') onCareerProfileChanged();
     if (!stored || !stored.profile) return;
     const p = stored.profile;
     const profileComplete = Boolean(p.fullname && p.phone && p.course && p.skills && p.experienceSummary);
@@ -1940,6 +1982,7 @@ async function logout() {
         }
     }
     localStorage.removeItem('imcc_user');
+    if (typeof onCareerProfileChanged === 'function') onCareerProfileChanged();
     updateNavAuthState();
     document.getElementById('dashboard').style.display = 'none';
     document.getElementById('adminDashboard').style.display = 'none';
@@ -2087,6 +2130,7 @@ async function handleProfileEditSubmit(event) {
             } catch (error) {
                 try {
                     localStorage.setItem('imcc_user', JSON.stringify(Object.assign({}, stored, { profile: profile })));
+    if (typeof onCareerProfileChanged === 'function') onCareerProfileChanged();
                     errorEl.textContent = 'Saved on this device. Cloud sync is temporarily unavailable.';
                     updateNavAuthState();
                     closeProfileEditModal();
@@ -2124,6 +2168,7 @@ async function handleProfileEditSubmit(event) {
                 if (saveError && /failed to fetch|network|fetch/i.test(saveError.message || '')) {
                     try {
                         localStorage.setItem('imcc_user', JSON.stringify(Object.assign({}, stored, { profile: profile })));
+    if (typeof onCareerProfileChanged === 'function') onCareerProfileChanged();
                         errorEl.textContent = 'Saved on this device. Cloud sync is temporarily unavailable.';
                         updateNavAuthState();
                         closeProfileEditModal();
@@ -2143,6 +2188,7 @@ async function handleProfileEditSubmit(event) {
         const nextUser = Object.assign({}, stored, { profile: profile });
         try {
             localStorage.setItem('imcc_user', JSON.stringify(nextUser));
+    if (typeof onCareerProfileChanged === 'function') onCareerProfileChanged();
         } catch (error) {
             errorEl.textContent = 'Profile saved remotely, but this resume is too large for local browser storage. Use a smaller file.';
             setSavingState(false);
@@ -2227,15 +2273,69 @@ async function logJobEvent(eventType, job, category) {
 
 /* FILTER JOBS */
 
-function filterJobs(category) {
-    const categorySelect = document.getElementById('jobCategory');
-    if (categorySelect) categorySelect.value = category;
-    document.querySelectorAll('.filter-btn').forEach(function(button) {
-        const selected = button.dataset.category === category;
-        button.classList.toggle('active', selected);
-        button.setAttribute('aria-pressed', selected ? 'true' : 'false');
-    });
-    searchJobs();
+function filterJobs(category, event) {
+
+    let jobs =
+    document.querySelectorAll(
+        ".job-card"
+    );
+
+    let buttons =
+    document.querySelectorAll(
+        ".filter-btn"
+    );
+
+    buttons.forEach(
+        function(button) {
+
+            button.classList.remove(
+                "active"
+            );
+
+        }
+    );
+
+    if (event && event.currentTarget) {
+        event.currentTarget.classList.add(
+            "active"
+        );
+    }
+
+    jobs.forEach(
+        function(job) {
+            if (
+                category === "all" ||
+                job.dataset.category === category
+            ) {
+                job.style.display = "block";
+            } else {
+                job.style.display = "none";
+            }
+        }
+    );
+
+    document.querySelectorAll('.category-block').forEach(
+        function(block) {
+            let visibleJobs = block.querySelectorAll('.job-card:not([style*="display: none"])');
+            const hasVisibleJobs = visibleJobs.length > 0;
+            const matchesSelectedCategory = category === 'all' || block.dataset.categoryGroup === category;
+            const toggle = block.querySelector('.category-toggle');
+            if (category === 'all') {
+                block.classList.add('is-collapsed');
+                if (toggle) {
+                    toggle.textContent = 'Show Jobs';
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            } else if (matchesSelectedCategory) {
+                block.classList.remove('is-collapsed');
+                if (toggle) {
+                    toggle.textContent = 'Hide Jobs';
+                    toggle.setAttribute('aria-expanded', 'true');
+                }
+            }
+            block.style.display = hasVisibleJobs ? 'grid' : 'none';
+        }
+    );
 }
 
 
@@ -2248,102 +2348,517 @@ function handleSearchInput() {
 }
 
 function searchJobs() {
-    const search = (document.getElementById('jobSearch').value || '').trim().toLowerCase();
-    const category = document.getElementById('jobCategory').value;
-    const employmentType = document.getElementById('jobEmploymentType').value;
-    const location = document.getElementById('jobLocation').value;
+
+    let search =
+    document
+    .getElementById(
+        "jobSearch"
+    )
+    .value
+    .trim()
+    .toLowerCase();
+
+    let category =
+    document
+    .getElementById(
+        "jobCategory"
+    )
+    .value;
+
+    let jobs =
+    document.querySelectorAll(
+        ".job-card"
+    );
+
     let visibleCount = 0;
 
-    document.querySelectorAll('.job-card').forEach(function(job) {
-        const searchableText = [
-            job.querySelector('h3').textContent,
-            job.querySelector('.company').textContent,
-            job.dataset.location,
-            job.dataset.employmentType,
-            job.querySelector('.job-description').textContent
-        ].join(' ').toLowerCase();
-        const normalizedEmployment = (job.dataset.employmentType || '').toLowerCase().replace(/[^a-z]+/g, '');
-        const matchesSearch = !search || searchableText.includes(search);
-        const matchesCategory = category === 'all' || job.dataset.category === category;
-        const matchesEmployment = employmentType === 'all' || normalizedEmployment.includes(employmentType.replace(/[^a-z]+/g, ''));
-        const matchesLocation = location === 'all' || job.dataset.location === location;
-        const visible = matchesSearch && matchesCategory && matchesEmployment && matchesLocation;
-        job.style.display = visible ? '' : 'none';
-        if (visible) visibleCount += 1;
-    });
+    jobs.forEach(
+        function(job) {
 
-    const message = document.getElementById('searchResultMessage');
-    if (message) {
-        message.textContent = 'Showing ' + visibleCount + ' of ' + document.querySelectorAll('.job-card').length + ' vacancy listings';
+            let title =
+            job.querySelector("h3")
+            .innerText
+            .toLowerCase();
+
+            let company =
+            job.querySelector(".company")
+            .innerText
+            .toLowerCase();
+
+            let tag =
+            job.querySelector(".job-tag")
+            .innerText
+            .toLowerCase();
+
+            let matchesSearch =
+            !search ||
+            title.includes(search) ||
+            company.includes(search) ||
+            tag.includes(search);
+
+            let matchesCategory =
+            category === "all" ||
+            category ===
+            job.dataset.category;
+
+            if(
+                matchesSearch &&
+                matchesCategory
+            ) {
+
+                job.style.display =
+                "block";
+                visibleCount++;
+
+            }
+
+            else {
+
+                job.style.display =
+                "none";
+
+            }
+
+        }
+    );
+
+    let message =
+    document.getElementById(
+        "searchResultMessage"
+    );
+
+    if (search || category !== "all") {
+        let foundText =
+            visibleCount +
+            " job" +
+            (visibleCount === 1 ?
+                " found" :
+                "s found");
+
+        if (visibleCount) {
+            message.innerHTML =
+                `<a href="#" onclick="scrollToFirstVisibleJob(event)">` +
+                foundText +
+                " — click to view" +
+                `</a>`;
+        } else {
+            message.textContent = foundText;
+        }
+    } else {
+        message.textContent = "";
     }
-    const emptyState = document.querySelector('.job-empty-state');
-    if (emptyState) emptyState.remove();
-    if (!visibleCount) {
-        const empty = document.createElement('p');
-        empty.className = 'job-empty-state';
-        empty.textContent = 'No vacancies match those filters. Try changing your search.';
-        document.getElementById('jobContainer').appendChild(empty);
-    }
+
+    document.querySelectorAll('.category-block').forEach(
+        function(block) {
+            let visibleJobs = block.querySelectorAll('.job-card:not([style*="display: none"])');
+            const hasVisibleJobs = visibleJobs.length > 0;
+            const toggle = block.querySelector('.category-toggle');
+            if (search || category !== 'all') {
+                if (hasVisibleJobs) block.classList.remove('is-collapsed');
+                if (toggle && hasVisibleJobs) {
+                    toggle.textContent = 'Hide Jobs';
+                    toggle.setAttribute('aria-expanded', 'true');
+                }
+            } else {
+                block.classList.add('is-collapsed');
+                if (toggle) {
+                    toggle.textContent = 'Show Jobs';
+                    toggle.setAttribute('aria-expanded', 'false');
+                }
+            }
+            block.style.display = hasVisibleJobs ? 'grid' : 'none';
+        }
+    );
 }
 
 function clearSearch() {
     document.getElementById('jobSearch').value = '';
     document.getElementById('jobCategory').value = 'all';
-    document.getElementById('jobEmploymentType').value = 'all';
-    document.getElementById('jobLocation').value = 'all';
-    document.querySelectorAll('.filter-btn').forEach(function(button, index) {
-        const selected = index === 0;
-        button.classList.toggle('active', selected);
-        button.setAttribute('aria-pressed', selected ? 'true' : 'false');
+    document.getElementById('searchResultMessage').textContent = '';
+    document.querySelectorAll('.job-card').forEach(function(job) {
+        job.style.display = 'block';
     });
-    searchJobs();
+    document.querySelectorAll('.category-block').forEach(function(block) {
+        block.style.display = 'grid';
+        block.classList.add('is-collapsed');
+        const toggle = block.querySelector('.category-toggle');
+        if (toggle) {
+            toggle.textContent = 'Show Jobs';
+            toggle.setAttribute('aria-expanded', 'false');
+        }
+    });
 }
 
-function renderRecommendedJobs(course, skills) {
+/* ==========================================================================
+   AI CAREER AGENT - matches the job feed to the signed-in user's profile
+   ========================================================================== */
+
+const AGENT_CATEGORY_RULES = [
+    ['IT', /\b(information technology|computer|software|programm\w*|developer|coding|web dev\w*|javascript|python|java|php|html|css|sql|database|network\w*|cyber\w*|it support|technical support|ict|bsit|bscs|bsis|data)\b/],
+    ['Healthcare', /(nursing|nurse|medical|medicine|health\w*|clinic\w*|patient|pharmac\w*|midwif\w*|caregiv\w*|laborator\w*|medtech|medical technolog\w*|radiolog\w*|dental|bsn|bsmt)/],
+    ['Business', /(business|management|marketing|finance|accounting|accountancy|sales|entrepreneur\w*|administration|\badmin\b|human resource\w*|\bhr\b|bookkeep\w*|banking|customer service|bsba|bsa\b)/],
+    ['CCJE', /(criminolog\w*|criminal|police|law enforcement|investigat\w*|security|forensic|correction\w*|justice|jail|bjmp|bscrim)/],
+    ['Social Work', /(social work\w*|social welfare|community|case management|counsel\w*|rehabilitat\w*|outreach|family service|psycholog\w*|bssw)/],
+    ['CHTM', /(hospitality|tourism|hotel|resort|events?\b|food and beverage|f&b|restaurant|culinary|cook\w*|travel|barista|front desk|bshm|bstm)/],
+    ['Education', /(education|teach\w*|tutor\w*|training|curriculum|school|instructor|pedagog\w*|elementary|secondary|bsed|beed)/]
+];
+
+const AGENT_STOP_WORDS = new Set(['and', 'the', 'for', 'with', 'from', 'that', 'this', 'have', 'has', 'are', 'was', 'were', 'bachelor', 'science', 'skills', 'skill', 'basic', 'good', 'strong', 'knowledge', 'experience', 'ability', 'work', 'working', 'also', 'etc', 'including']);
+
+window.careerAgentMatches = null;
+
+function getStoredCareerProfile() {
+    const stored = readLocalJson('imcc_user', null);
+    const p = stored && stored.profile ? stored.profile : null;
+    if (!p) return null;
+    return {
+        course: String(p.course || ''),
+        skills: String(p.skills || ''),
+        experienceSummary: String(p.experienceSummary || '')
+    };
+}
+
+function getAgentJobPool() {
+    return (Array.isArray(window.jobCategories) ? window.jobCategories : []).flatMap(function(group) {
+        return (Array.isArray(group.jobs) ? group.jobs : []).map(function(job) {
+            return {
+                title: job.title || '',
+                company: job.company || '',
+                categoryKey: group.category || '',
+                category: group.label || group.category || job.tag || '',
+                tag: job.tag || '',
+                location: job.location || '',
+                employmentType: job.employmentType || job.employment_type || '',
+                description: job.description || '',
+                url: job.url || ''
+            };
+        });
+    }).filter(function(job) {
+        return job.title && job.company;
+    }).slice(0, 80);
+}
+
+function agentCategoriesFromText(text) {
+    const lower = String(text || '').toLowerCase();
+    if (!lower.trim()) return [];
+    return AGENT_CATEGORY_RULES.filter(function(rule) { return rule[1].test(lower); }).map(function(rule) { return rule[0]; });
+}
+
+function agentSkillList(skills) {
+    return String(skills || '').toLowerCase()
+        .split(/[,;\n\/|]+/)
+        .map(function(s) { return s.replace(/\s+/g, ' ').trim(); })
+        .filter(function(s) { return s.length >= 2 && s.length <= 40; })
+        .slice(0, 20);
+}
+
+// Deterministic, explainable matching used as the instant view and as the fallback
+// whenever the AI service is unavailable.
+function scoreJobsForProfile(profile, pool) {
+    const courseCats = agentCategoriesFromText(profile.course);
+    const skillCats = agentCategoriesFromText(profile.skills);
+    const expCats = agentCategoriesFromText(profile.experienceSummary);
+    const skillPhrases = agentSkillList(profile.skills);
+    const looseTokens = Array.from(new Set((profile.skills + ' ' + profile.course).toLowerCase().match(/[a-z0-9+#.]{3,}/g) || []))
+        .filter(function(t) { return !AGENT_STOP_WORDS.has(t); });
+
+    return pool.map(function(job, index) {
+        const text = [job.title, job.company, job.category, job.tag, job.description].join(' ').toLowerCase();
+        let score = 0;
+        const reasons = [];
+        const key = job.categoryKey;
+
+        if (courseCats.includes(key)) {
+            score += 50;
+            reasons.push('Your course (' + profile.course.trim() + ') fits ' + job.category + '.');
+        }
+        if (skillCats.includes(key)) {
+            score += courseCats.includes(key) ? 15 : 28;
+            if (!courseCats.includes(key)) reasons.push('Your skills point toward ' + job.category + '.');
+        }
+        if (expCats.includes(key)) score += 8;
+
+        const matchedSkills = skillPhrases.filter(function(phrase) { return text.includes(phrase); });
+        if (matchedSkills.length) {
+            score += Math.min(36, matchedSkills.length * 12);
+            reasons.push('Matches your skills: ' + matchedSkills.slice(0, 4).join(', ') + '.');
+        } else {
+            const hits = looseTokens.filter(function(t) { return text.includes(t); });
+            if (hits.length) score += Math.min(12, hits.length * 4);
+        }
+        return { index: index, job: job, score: Math.min(98, score), reasons: reasons, skillsToBuild: [] };
+    }).filter(function(item) {
+        return item.score >= 25;
+    }).sort(function(a, b) {
+        return b.score - a.score || a.index - b.index;
+    });
+}
+
+function createAgentMatchCard(item, options) {
+    const job = item.job;
+    const card = document.createElement('article');
+    card.className = 'recommended-card';
+
+    const top = document.createElement('div');
+    top.className = 'recommended-card-top';
+    const score = document.createElement('span');
+    score.className = 'match-score';
+    score.textContent = item.score + '% match';
+    const tag = document.createElement('span');
+    tag.className = 'job-tag';
+    tag.textContent = job.tag || job.category;
+    top.appendChild(score);
+    top.appendChild(tag);
+    card.appendChild(top);
+
+    const title = document.createElement('h3');
+    title.textContent = job.title;
+    card.appendChild(title);
+    const company = document.createElement('p');
+    company.className = 'company';
+    company.textContent = job.company;
+    card.appendChild(company);
+    const info = document.createElement('p');
+    info.className = 'job-info';
+    info.textContent = [job.location, job.employmentType].filter(Boolean).join(' • ');
+    card.appendChild(info);
+
+    const reasonText = item.whyFit || item.reasons.join(' ') || 'A relevant opening in the current job feed.';
+    const reason = document.createElement('p');
+    reason.className = 'match-reason';
+    reason.textContent = reasonText;
+    reason.hidden = !(options && options.showReason);
+    card.appendChild(reason);
+
+    if (item.skillsToBuild && item.skillsToBuild.length) {
+        const build = document.createElement('p');
+        build.className = 'match-skills-to-build';
+        build.textContent = 'Skills to build: ' + item.skillsToBuild.join(', ');
+        card.appendChild(build);
+    }
+
+    const actions = document.createElement('div');
+    actions.className = 'recommended-actions';
+    const viewBtn = document.createElement('button');
+    viewBtn.type = 'button';
+    viewBtn.className = 'apply-btn';
+    viewBtn.textContent = 'View Job';
+    viewBtn.addEventListener('click', function(event) { scrollToRecommendedJob(event, job.title); });
+    actions.appendChild(viewBtn);
+    if (!(options && options.showReason)) {
+        const whyBtn = document.createElement('button');
+        whyBtn.type = 'button';
+        whyBtn.className = 'why-match-btn';
+        whyBtn.textContent = 'Why this matches?';
+        whyBtn.addEventListener('click', function(event) {
+            event.stopPropagation();
+            reason.hidden = !reason.hidden;
+        });
+        actions.appendChild(whyBtn);
+    }
+    card.appendChild(actions);
+    return card;
+}
+
+function renderRecommendedJobs() {
     const container = document.getElementById('recommendedJobs');
     if (!container) return;
-    const terms = (String(course || '') + ' ' + String(skills || '')).toLowerCase().split(/[^a-z0-9]+/).filter(function(term) {
-        return term.length > 2;
-    });
-    const jobs = Array.from(document.querySelectorAll('.job-card'));
-    const ranked = jobs.map(function(job) {
-        const text = job.innerText.toLowerCase();
-        const hits = terms.filter(function(term) { return text.includes(term); }).length;
-        const score = terms.length ? Math.min(94, Math.max(62, 58 + Math.round((hits / terms.length) * 40))) : 70;
-        return { job: job, score: score, hits: hits };
-    }).sort(function(left, right) {
-        return right.score - left.score;
-    }).slice(0, 3);
+    container.replaceChildren();
 
-    if (!ranked.length) {
-        container.innerHTML = '<p class="recommended-empty">Complete your profile or ask Career AI to see personalized matches.</p>';
+    function message(text) {
+        const p = document.createElement('p');
+        p.className = 'recommended-empty';
+        p.textContent = text;
+        container.appendChild(p);
+    }
+
+    const profile = getStoredCareerProfile();
+    if (!profile || (!profile.course.trim() && !profile.skills.trim())) {
+        message('Sign in and complete your profile (course and skills) to see jobs matched to you.');
+        return;
+    }
+    const pool = getAgentJobPool();
+    let items = Array.isArray(window.careerAgentMatches) && window.careerAgentMatches.length
+        ? window.careerAgentMatches
+        : scoreJobsForProfile(profile, pool);
+    items = items.slice(0, 3);
+    if (!items.length) {
+        message('No openings in the current feed closely match your profile yet. Try adding more specific skills to your profile.');
+        return;
+    }
+    items.forEach(function(item) { container.appendChild(createAgentMatchCard(item)); });
+}
+
+function refreshCareerAgentProfile() {
+    const box = document.getElementById('careerAgentProfile');
+    if (!box) return;
+    box.replaceChildren();
+    const profile = getStoredCareerProfile();
+    function line(label, value) {
+        const row = document.createElement('p');
+        const strong = document.createElement('strong');
+        strong.textContent = label + ': ';
+        row.appendChild(strong);
+        row.appendChild(document.createTextNode(value));
+        box.appendChild(row);
+    }
+    if (!profile || (!profile.course.trim() && !profile.skills.trim())) {
+        const p = document.createElement('p');
+        p.textContent = 'Sign in with your @imcc.edu.ph account and complete your profile so the agent can match you to jobs.';
+        box.appendChild(p);
+        return;
+    }
+    line('Course', profile.course.trim() || 'Not set');
+    line('Skills', profile.skills.trim() || 'Not set');
+}
+
+function onCareerProfileChanged() {
+    window.careerAgentMatches = null;
+    const results = document.getElementById('careerAgentResults');
+    const status = document.getElementById('careerAgentStatus');
+    if (results) results.replaceChildren();
+    if (status) status.textContent = '';
+    refreshCareerAgentProfile();
+    renderRecommendedJobs();
+}
+
+function clearCareerAgent() {
+    window.careerAgentMatches = null;
+    const results = document.getElementById('careerAgentResults');
+    const status = document.getElementById('careerAgentStatus');
+    if (results) results.replaceChildren();
+    if (status) status.textContent = '';
+    renderRecommendedJobs();
+}
+
+function showAgentResults(items, summaryText, noticeText) {
+    const results = document.getElementById('careerAgentResults');
+    results.replaceChildren();
+    if (noticeText) {
+        const notice = document.createElement('p');
+        notice.className = 'career-agent-notice';
+        notice.textContent = noticeText;
+        results.appendChild(notice);
+    }
+    if (summaryText) {
+        const summary = document.createElement('p');
+        summary.className = 'career-agent-summary';
+        summary.textContent = summaryText;
+        results.appendChild(summary);
+    }
+    if (!items.length) {
+        const empty = document.createElement('p');
+        empty.className = 'recommended-empty';
+        empty.textContent = 'No openings in the current feed closely match your profile yet. Try adding more specific skills to your profile.';
+        results.appendChild(empty);
+        return;
+    }
+    const grid = document.createElement('div');
+    grid.className = 'career-agent-grid';
+    items.forEach(function(item) {
+        const card = createAgentMatchCard(item, { showReason: true });
+        const url = item.job.url && safeExternalUrl(item.job.url);
+        if (url && url !== '#') {
+            const apply = document.createElement('a');
+            apply.className = 'agent-apply-link';
+            apply.href = url;
+            apply.target = '_blank';
+            apply.rel = 'noopener noreferrer';
+            apply.textContent = 'Open application page';
+            card.appendChild(apply);
+        }
+        grid.appendChild(card);
+    });
+    results.appendChild(grid);
+}
+
+async function runCareerAgent() {
+    const button = document.getElementById('careerAgentButton');
+    const status = document.getElementById('careerAgentStatus');
+    if (!button || button.disabled) return;
+
+    const auth = await getCareerAiAuth();
+    if (!auth.authenticated) {
+        status.textContent = 'Please sign in with your @imcc.edu.ph account to get matches.';
+        showLogin();
+        setAuthError('login', 'Please sign in with your @imcc.edu.ph institutional Google account to match jobs to your profile.');
+        return;
+    }
+    const profile = auth.profile;
+    if (!String(profile.course || '').trim() && !String(profile.skills || '').trim()) {
+        status.textContent = 'Please complete your profile with your course and skills first, then try again.';
         return;
     }
 
-    container.innerHTML = ranked.map(function(item) {
-        const job = item.job;
-        const title = job.querySelector('h3').innerText;
-        const company = job.querySelector('.company').innerText;
-        const info = Array.from(job.querySelectorAll('.job-info')).map(function(element) { return element.innerText; }).join(' • ');
-        const why = item.hits ? 'Matches your skills or career direction.' : 'A strong starting point in the current job feed.';
-        return '<article class="recommended-card">' +
-            '<div class="recommended-card-top"><span class="match-score">' + item.score + '% match</span><span class="job-tag">' + escapeHtml(job.querySelector('.job-tag').innerText) + '</span></div>' +
-            '<h3>' + escapeHtml(title) + '</h3>' +
-            '<p class="company">' + escapeHtml(company) + '</p>' +
-            '<p class="job-info">' + escapeHtml(info) + '</p>' +
-            '<div class="recommended-actions"><button type="button" class="apply-btn" onclick="scrollToRecommendedJob(event, \'' + title.replace(/'/g, "\\'") + '\')">View Job</button>' +
-            '<button type="button" class="why-match-btn" onclick="showMatchReason(event, this, \'' + why.replace(/'/g, "\\'") + '\')">Why this matches?</button></div>' +
-            '<p class="match-reason" hidden></p>' +
-            '</article>';
-    }).join('');
+    const pool = getAgentJobPool();
+    if (!pool.length) {
+        status.textContent = 'No job listings are loaded yet. Please try again in a moment.';
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = 'Matching...';
+    status.textContent = 'Comparing your profile with current openings...';
+    const controller = new AbortController();
+    const timer = setTimeout(function() { controller.abort(); }, 28000);
+
+    try {
+        const response = await fetch('/api/career-agent', {
+            credentials: 'omit',
+            method: 'POST',
+            headers: auth.headers,
+            signal: controller.signal,
+            body: JSON.stringify({
+                mode: 'match',
+                profile: profile,
+                jobs: pool.map(function(job) {
+                    return {
+                        title: job.title,
+                        company: job.company,
+                        category: job.category,
+                        location: job.location,
+                        employmentType: job.employmentType,
+                        description: job.description
+                    };
+                })
+            })
+        });
+        const data = await response.json().catch(function() { return {}; });
+        if (!response.ok) throw new Error(data.error || 'The career agent is temporarily unavailable.');
+
+        const items = (Array.isArray(data.matches) ? data.matches : []).filter(function(m) {
+            return m && Number.isInteger(m.jobIndex) && pool[m.jobIndex];
+        }).slice(0, 5).map(function(m) {
+            return {
+                index: m.jobIndex,
+                job: pool[m.jobIndex],
+                score: Math.max(0, Math.min(99, Math.round(Number(m.matchScore) || 0))),
+                whyFit: String(m.whyFit || ''),
+                reasons: [],
+                skillsToBuild: Array.isArray(m.skillsToBuild) ? m.skillsToBuild.map(String).slice(0, 4) : []
+            };
+        });
+        window.careerAgentMatches = items;
+        showAgentResults(items, typeof data.summary === 'string' ? data.summary : '', '');
+        renderRecommendedJobs();
+        status.textContent = items.length ? 'Done. Here are your best matches.' : '';
+    } catch (error) {
+        const local = scoreJobsForProfile(profile, pool).slice(0, 5);
+        window.careerAgentMatches = local;
+        showAgentResults(local, '', 'The AI service is unavailable right now, so these are keyword-based matches from your profile.');
+        renderRecommendedJobs();
+        status.textContent = '';
+    } finally {
+        clearTimeout(timer);
+        button.disabled = false;
+        button.textContent = 'Match me to jobs';
+    }
 }
 
-function showMatchReason(event, button, reason) {
-    event.stopPropagation();
-    const reasonElement = button.closest('.recommended-card').querySelector('.match-reason');
-    reasonElement.textContent = reason;
-    reasonElement.hidden = !reasonElement.hidden;
-}
+window.addEventListener('DOMContentLoaded', function() {
+    refreshCareerAgentProfile();
+    renderRecommendedJobs();
+});
 
 async function getCareerAiAuth() {
     const headers = { 'Content-Type': 'application/json' };
@@ -2510,6 +3025,7 @@ async function saveProfileFeedbackSummary() {
 
         const updatedUser = Object.assign({}, stored, { email: user.email, profile: profile });
         localStorage.setItem('imcc_user', JSON.stringify(updatedUser));
+    if (typeof onCareerProfileChanged === 'function') onCareerProfileChanged();
         const summaryElement = document.querySelector('#dashboardProfile .summary');
         if (summaryElement) summaryElement.textContent = 'Summary: ' + summary;
         status.textContent = 'Rewritten summary saved to your profile.';
@@ -2518,249 +3034,6 @@ async function saveProfileFeedbackSummary() {
     } finally {
         saveButton.disabled = false;
     }
-}
-
-let careerChatHistory = [];
-
-function appendCareerAiMessage(result, role, content) {
-    const message = document.createElement('div');
-    message.className = 'career-ai-message career-ai-message-' + role;
-    const text = document.createElement('p');
-    text.className = 'career-ai-answer';
-    text.textContent = content;
-    message.appendChild(text);
-    result.appendChild(message);
-    result.scrollTop = result.scrollHeight;
-    return message;
-}
-
-async function askCareerQuickQuestion(questionType) {
-    const prompt = document.getElementById('aiPrompt');
-    const sendButton = document.getElementById('careerAiSendButton');
-    if (!prompt || (sendButton && sendButton.disabled)) return;
-
-    const questions = {
-        'fresh-graduates': 'What current jobs are suitable for fresh graduates?',
-        remote: 'What current remote jobs are available?',
-        iligan: 'What current jobs are available in Iligan City?'
-    };
-    let question = questions[questionType];
-
-    if (questionType === 'my-course') {
-        const auth = await getCareerAiAuth();
-        if (!auth.authenticated) {
-            showLogin();
-            setAuthError('login', 'Please sign in with your @imcc.edu.ph institutional Google account to find jobs for your course.');
-            return;
-        }
-        if (!auth.profile.course || !auth.profile.skills) {
-            const result = document.getElementById('recommendation-result');
-            result.style.display = 'block';
-            appendCareerAiMessage(result, 'assistant', 'Please complete your profile with your course and skills, then try this quick question again.');
-            careerChatHistory.push({ role: 'assistant', content: 'Please complete your profile with your course and skills, then try this quick question again.' });
-            return;
-        }
-        question = 'Find current jobs that match my course: ' + auth.profile.course + '. My skills are: ' + auth.profile.skills + '.';
-    }
-
-    if (!question) return;
-    prompt.value = question;
-    askCareerAI();
-}
-
-function showLocalCareerRecommendations(prompt, profile, jobs, error) {
-    const ignoredTerms = new Set(['a', 'an', 'and', 'are', 'can', 'for', 'fit', 'fits', 'have', 'i', 'in', 'is', 'me', 'my', 'of', 'the', 'to', 'what', 'with', 'want']);
-    const terms = (String(prompt || '') + ' ' + (profile.course || '') + ' ' + (profile.skills || '') + ' ' + (profile.experienceSummary || ''))
-        .toLowerCase()
-        .match(/[a-z0-9+#.]{2,}/g)
-        || [];
-    const filteredTerms = terms
-        .filter(function(term) { return !ignoredTerms.has(term); });
-    const matches = jobs.map(function(job) {
-        const haystack = [job.title, job.company, job.category, job.location, job.employmentType, job.description]
-            .join(' ')
-            .toLowerCase();
-        const matchedTerms = filteredTerms.filter(function(term) { return haystack.includes(term); });
-        return { job: job, matchedTerms: matchedTerms, score: matchedTerms.length };
-    }).filter(function(match) {
-        return match.score > 0;
-    }).sort(function(a, b) {
-        return b.score - a.score;
-    }).slice(0, 3);
-
-    const response = document.createElement('div');
-    const notice = document.createElement('p');
-    notice.className = 'career-ai-answer';
-    notice.textContent = 'Career AI is unavailable right now (' + (error && error.message || 'connection error') + '). Showing local keyword-based matches instead.';
-    response.appendChild(notice);
-
-    if (!filteredTerms.length) {
-        const guidance = document.createElement('p');
-        guidance.textContent = 'Add your course or specific skills to your question or profile for relevant matches.';
-        response.appendChild(guidance);
-        return response;
-    }
-
-    if (!matches.length) {
-        const guidance = document.createElement('p');
-        guidance.textContent = 'No current job listings matched those terms. Try adding your course, skills, or a role you are interested in.';
-        response.appendChild(guidance);
-        return response;
-    }
-
-    const heading = document.createElement('h4');
-    heading.className = 'career-ai-matches-title';
-    heading.textContent = 'Local matches from current job listings';
-    response.appendChild(heading);
-    const list = document.createElement('ul');
-    list.className = 'career-ai-matches';
-    matches.forEach(function(match) {
-        const item = document.createElement('li');
-        const title = document.createElement('strong');
-        title.textContent = match.job.title + ' at ' + match.job.company;
-        item.appendChild(title);
-        const reason = document.createElement('p');
-        reason.textContent = 'Matched terms: ' + match.matchedTerms.join(', ');
-        item.appendChild(reason);
-        if (match.job.url && safeExternalUrl(match.job.url) !== '#') {
-            const link = document.createElement('a');
-            link.href = safeExternalUrl(match.job.url);
-            link.target = '_blank';
-            link.rel = 'noopener noreferrer';
-            link.textContent = 'View application';
-            item.appendChild(link);
-        }
-        list.appendChild(item);
-    });
-    response.appendChild(list);
-    return response;
-}
-
-function askCareerAI() {
-    const prompt = document.getElementById('aiPrompt');
-    const text = prompt ? prompt.value.trim() : '';
-    const result = document.getElementById('recommendation-result');
-    const sendButton = document.getElementById('careerAiSendButton');
-    const clearButton = document.querySelector('.career-ai-input-row .ai-clear-btn');
-    if (sendButton && sendButton.disabled) return;
-    if (!text) {
-        if (prompt) prompt.focus();
-        return;
-    }
-
-    const jobs = (Array.isArray(window.jobCategories) ? window.jobCategories : []).flatMap(function(group) {
-        return (Array.isArray(group.jobs) ? group.jobs : []).map(function(job) {
-            return {
-                title: job.title || '',
-                company: job.company || '',
-                category: group.label || group.category || job.tag || '',
-                location: job.location || '',
-                employmentType: job.employmentType || job.employment_type || '',
-                description: job.description || '',
-                url: job.url || ''
-            };
-        });
-    }).filter(function(job) {
-        return job.title && job.company;
-    }).slice(0, 80);
-
-    result.classList.remove('recommendation-warning');
-    result.style.display = 'block';
-    careerChatHistory.push({ role: 'user', content: text });
-    appendCareerAiMessage(result, 'user', text);
-    const pendingMessage = appendCareerAiMessage(result, 'assistant', 'Thinking...');
-    if (sendButton) {
-        sendButton.disabled = true;
-        sendButton.textContent = 'Thinking...';
-    }
-    if (clearButton) clearButton.disabled = true;
-    if (prompt) prompt.value = '';
-
-    let fallbackProfile = {};
-    getCareerAiAuth().then(function(auth) {
-    fallbackProfile = auth.profile;
-    return fetch('/api/career-agent', {
-        credentials: 'omit',
-        method: 'POST',
-        headers: auth.headers,
-        body: JSON.stringify({
-            prompt: text,
-            history: careerChatHistory.slice(0, -1).slice(-8),
-            profile: auth.profile,
-            jobs: jobs.map(function(job) {
-                return {
-                    title: job.title,
-                    company: job.company,
-                    category: job.category,
-                    location: job.location,
-                    employmentType: job.employmentType,
-                    description: job.description
-                };
-            })
-        })
-    });
-    }).then(async function(response) {
-        const data = await response.json().catch(function() { return {}; });
-        if (!response.ok) throw new Error(data.error || 'Career AI is temporarily unavailable.');
-
-        const answerText = data.answer || 'I could not form an answer. Please try asking another way.';
-        const answer = pendingMessage.querySelector('.career-ai-answer');
-        answer.textContent = answerText;
-        careerChatHistory.push({ role: 'assistant', content: answerText });
-
-        const matches = Array.isArray(data.recommendations) ? data.recommendations : [];
-        const matchItems = matches.filter(function(match) {
-            return Number.isInteger(match.jobIndex) && jobs[match.jobIndex];
-        }).slice(0, 3);
-        if (matchItems.length) {
-            const heading = document.createElement('h4');
-            heading.className = 'career-ai-matches-title';
-            heading.textContent = 'Openings to explore';
-            pendingMessage.appendChild(heading);
-
-            const list = document.createElement('ul');
-            list.className = 'career-ai-matches';
-            matchItems.forEach(function(match) {
-                const job = jobs[match.jobIndex];
-                const item = document.createElement('li');
-                const title = document.createElement('strong');
-                title.textContent = job.title + ' at ' + job.company;
-                item.appendChild(title);
-                const reason = document.createElement('p');
-                reason.textContent = match.whyFit || '';
-                item.appendChild(reason);
-                const skills = Array.isArray(match.skillsToBuild) ? match.skillsToBuild.filter(Boolean).slice(0, 4) : [];
-                if (skills.length) {
-                    const skillsLine = document.createElement('p');
-                    skillsLine.textContent = 'Skills to build: ' + skills.join(', ');
-                    item.appendChild(skillsLine);
-                }
-                if (job.url && safeExternalUrl(job.url) !== '#') {
-                    const link = document.createElement('a');
-                    link.href = safeExternalUrl(job.url);
-                    link.target = '_blank';
-                    link.rel = 'noopener noreferrer';
-                    link.textContent = 'View application';
-                    item.appendChild(link);
-                }
-                list.appendChild(item);
-            });
-            pendingMessage.appendChild(list);
-        }
-        result.scrollTop = result.scrollHeight;
-        document.getElementById('ai').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }).catch(function(error) {
-        const localResponse = showLocalCareerRecommendations(text, fallbackProfile, jobs, error);
-        pendingMessage.replaceChildren(localResponse);
-        careerChatHistory.push({ role: 'assistant', content: 'Career AI is unavailable. Showing local keyword-based matches instead.' });
-        result.scrollTop = result.scrollHeight;
-    }).finally(function() {
-        if (sendButton) {
-            sendButton.disabled = false;
-            sendButton.textContent = 'Send';
-        }
-        if (clearButton) clearButton.disabled = false;
-    });
 }
 
 function scrollToFirstVisibleJob(event) {
@@ -2782,211 +3055,6 @@ function scrollToRecommendedJob(event, title) {
         match.classList.add('highlight-job');
         setTimeout(() => match.classList.remove('highlight-job'), 2000);
     }
-}
-
-function clearRecommendation() {
-    const prompt = document.getElementById('aiPrompt');
-    if (prompt) prompt.value = '';
-    const result = document.getElementById('recommendation-result');
-    if (!result) return;
-    result.style.display = 'none';
-    result.replaceChildren();
-    result.classList.remove('recommendation-warning');
-    careerChatHistory = [];
-}
-
-/* AI JOB RECOMMENDATION */
-
-function recommendJob() {
-    const promptText = (document.getElementById('aiPrompt') || {}).value || '';
-    const courseValue = (document.getElementById('userCourse') || {}).value || '';
-    const skillsValue = (document.getElementById('userSkills') || {}).value || '';
-    const experienceElement = document.getElementById('userExperienceType');
-    const yearsElement = document.getElementById('userYearsExperience');
-    let course = (courseValue || promptText).toLowerCase();
-    let skills = (skillsValue || promptText).toLowerCase();
-    let experienceType = experienceElement ? experienceElement.value : 'Fresh Graduate';
-    let yearsExperience = yearsElement ? parseInt(yearsElement.value, 10) : 0;
-
-    let result =
-    document
-    .getElementById(
-        "recommendation-result"
-    );
-
-    let keywords = (course + " " + skills).trim();
-    let readableText = keywords.replace(/[\s\W_]+/g, '');
-
-    if (!keywords || !readableText) {
-        result.classList.add('recommendation-warning');
-        result.style.display = "block";
-        result.innerHTML =
-            "<strong>AI Recommendation:</strong>" +
-            "<br><br>" +
-            "Please enter readable course and skills text instead of symbols or unreadable characters. " +
-            "For example: Computer Science, Business Administration, Nursing, or Digital Marketing.";
-        return;
-    }
-
-    const experienceLabel =
-        experienceType === "Fresh Graduate" ?
-            "as a fresh graduate" :
-        experienceType === "Internship Experience" ?
-            "with internship experience" :
-        yearsExperience >= 0 ?
-            `with ${yearsExperience} year${yearsExperience === 1 ? "" : "s"} of work experience` :
-            "with work experience";
-
-    function getCategoryFromText(text) {
-        if (!text) return "";
-        if (/information|computer|software|it|technology|programming|coding|javascript|python|html|css|sql|database|network|systems/.test(text)) {
-            return "IT";
-        }
-        if (/nursing|medical|health|clinic|patient|care|pharmacy|healthcare|clinical/.test(text)) {
-            return "Healthcare";
-        }
-        if (/business|management|marketing|finance|accounting|sales|entrepreneur|admin|human resources|hr/.test(text)) {
-            return "Business";
-        }
-        if (/crime|criminal|police|law enforcement|investigation|security|forensic|corrections|justice/.test(text)) {
-            return "CCJE";
-        }
-        if (/social work|social welfare|community|case management|counseling|rehabilitation|outreach|family service/.test(text)) {
-            return "Social Work";
-        }
-        if (/hospitality|tourism|hotel|resort|events?|food and beverage|f&b|restaurant|travel/.test(text)) {
-            return "CHTM";
-        }
-        if (/education|teaching|tutor|training|learning|curriculum|school|instructor/.test(text)) {
-            return "Education";
-        }
-        if (/design|graphic|ux|ui|creative|content|multimedia|social media|video/.test(text)) {
-            return "Creative";
-        }
-        if (/engineering|civil|mechanical|electronics|construction|drafting|cad|technical/.test(text)) {
-            return "Engineering";
-        }
-        return "";
-    }
-
-    const courseCategory = getCategoryFromText(course);
-    const skillsCategory = getCategoryFromText(skills);
-    const selectedCategories = [];
-    if (courseCategory) selectedCategories.push(courseCategory);
-    if (skillsCategory && skillsCategory !== courseCategory) selectedCategories.push(skillsCategory);
-
-    const categoryLabels = {
-        IT: 'Information Technology',
-        Healthcare: 'Healthcare',
-        Business: 'Business',
-        Education: 'Education',
-        CCJE: 'CCJE',
-        'Social Work': 'Social Work',
-        CHTM: 'CHTM'
-    };
-
-    renderRecommendedJobs(course, skills);
-
-    let category = "General Career Opportunities";
-    let summary =
-        "Your course and skills do not clearly align to one category, so this recommendation focuses on transferable roles and broad openings.";
-    let recommendationLabel = category;
-
-    if (selectedCategories.length === 1) {
-        category = selectedCategories[0];
-        recommendationLabel = categoryLabels[category] || category;
-        if (category === "IT") {
-            summary =
-                `Build your tech career ${experienceLabel} in roles that match your growing technical skills.`;
-        } else if (category === "Healthcare") {
-            summary =
-                `Support health teams and patients ${experienceLabel} in a rewarding healthcare role.`;
-        } else if (category === "Business") {
-            summary =
-                `Start your business career ${experienceLabel} with roles focused on operations, marketing, or client service.`;
-        } else if (category === "Education") {
-            summary =
-                `Use your passion for learning and teaching ${experienceLabel} to make an impact in education.`;
-        } else if (category === "CCJE") {
-            summary =
-                `Use your strong sense of justice and community safety ${experienceLabel} in criminal justice and public safety roles.`;
-        } else if (category === "Social Work") {
-            summary =
-                `Support communities and individuals ${experienceLabel} in meaningful social work and welfare roles.`;
-        } else if (category === "CHTM") {
-            summary =
-                `Enter hospitality, tourism, and event services ${experienceLabel} with customer-focused and service-oriented roles.`;
-        }
-    } else if (selectedCategories.length === 2) {
-        recommendationLabel = `${categoryLabels[courseCategory] || courseCategory} & ${categoryLabels[skillsCategory] || skillsCategory}`;
-        summary =
-            `Your course suggests ${categoryLabels[courseCategory] || courseCategory} while your skills point toward ${categoryLabels[skillsCategory] || skillsCategory}. Here are opportunities across both categories that may use your transferable experience.`;
-    }
-
-    let jobs = Array.from(document.querySelectorAll('.job-card'));
-    let matches = [];
-    if (selectedCategories.length) {
-        matches = jobs.filter(function(job) {
-            return selectedCategories.includes(job.dataset.category);
-        });
-    }
-    if (!matches.length && category && category !== 'General Career Opportunities') {
-        matches = jobs.filter(function(job) {
-            return job.dataset.category === category;
-        });
-    }
-
-    if (!matches.length) {
-        let terms = keywords.split(/\s+/).filter(Boolean);
-        matches = jobs.filter(function(job) {
-            let text = (
-                job.querySelector('h3').innerText + ' ' +
-                job.querySelector('.company').innerText + ' ' +
-                Array.from(job.querySelectorAll('.job-info')).map(function(el) { return el.innerText; }).join(' ') + ' ' +
-                job.querySelector('.job-tag').innerText
-            ).toLowerCase();
-            return terms.some(function(term) {
-                return text.includes(term);
-            });
-        });
-    }
-
-    if (!matches.length && jobs.length) {
-        matches = jobs.slice(0, 3);
-    }
-
-    let listHtml = '<ul class="recommendation-list">';
-    matches.slice(0, 3).forEach(function(job) {
-        let title = job.querySelector('h3').innerText;
-        let company = job.querySelector('.company').innerText;
-        let info = Array.from(job.querySelectorAll('.job-info')).map(function(el) { return el.innerText; }).join(' • ');
-        let url = job.dataset.url || '';
-        let safeTitle = title.replace(/'/g, "\\'");
-        listHtml += '<li class="recommendation-item">';
-        listHtml += '<a href="#" class="recommendation-suggestion" onclick="scrollToRecommendedJob(event, \'' + safeTitle + '\')">';
-        listHtml += '<strong>' + title + '</strong><br>' + company + ' • ' + info;
-        listHtml += '</a>';
-        if (url) {
-            listHtml += '<br><a href="' + url + '" target="_blank" rel="noopener noreferrer">View job details</a>';
-        }
-        listHtml += '</li>';
-    });
-    listHtml += '</ul>';
-
-    result.classList.remove('recommendation-warning');
-    result.style.display = "block";
-    result.innerHTML =
-        "<strong>AI     Recommendation:</strong>" +
-        "<br><br>" +
-        `Based on your course and skills, the best match is <strong>${category}</strong>.` +
-        "<br><br>" +
-        summary +
-        "<br><br>" +
-        "<em>Top matching openings from the current job feed:</em>" +
-        listHtml +
-        "<br>" +
-        "Tip: include more specific skills, tools, or career goals for even better recommendations.";
-
 }
 
 </script>
