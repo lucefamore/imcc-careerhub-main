@@ -112,12 +112,13 @@
             <div class="career-ai-heading">
                 <span class="ai-spark">🤖</span>
                 <div>
-                    <span class="ai-label">IMCC Career Chatbot</span>
-                    <p>Ask questions about jobs, skills, applications, and career planning.</p>
+                    <span class="ai-label">IMCC Career AI Chat</span>
+                    <p>Ask about careers, job openings, skills, or applications.</p>
                 </div>
             </div>
+            <div id="recommendation-result" class="career-ai-messages" role="log" aria-label="Career AI conversation" aria-live="polite" aria-relevant="additions text"></div>
             <div class="career-ai-input-row">
-                <input id="aiPrompt" type="text" placeholder="Message IMCC Career Chatbot..." aria-label="Message IMCC Career Chatbot" onkeydown="if(event.key==='Enter'){event.preventDefault();askCareerAI();}">
+                <input id="aiPrompt" type="text" placeholder="Ask a question or follow up..." aria-label="Message IMCC Career AI" onkeydown="if(event.key==='Enter'){event.preventDefault();askCareerAI();}">
                 <button class="search-btn" id="careerAiSendButton" type="button" onclick="askCareerAI()">Send</button>
                 <button class="ai-clear-btn" type="button" onclick="clearRecommendation()">New chat</button>
             </div>
@@ -127,13 +128,12 @@
                 <button type="button" onclick="askCareerQuickQuestion('iligan')">Jobs in Iligan</button>
                 <button type="button" onclick="askCareerQuickQuestion('my-course')">Jobs for my course</button>
             </div>
-            <p class="career-ai-hint">Try: “What jobs can I apply for as a fresh graduate?”</p>
-            <div id="recommendation-result" class="career-chat-history" role="log" aria-live="polite" aria-label="Chat conversation"></div>
+            <p class="career-ai-hint">Try: “I know HTML and Python” or “I want a healthcare job.”</p>
         </div>
 
         <div class="ai-content">
 
-            <h2>🤖 Your IMCC Career Chatbot</h2>
+            <h2>🤖 AI Career Agent</h2>
 
             <p>
                     Explore matching roles, understand why they fit, and identify the skills that can strengthen your next application.
@@ -2764,9 +2764,24 @@ async function saveProfileFeedbackSummary() {
     }
 }
 
+let careerChatHistory = [];
+
+function appendCareerAiMessage(result, role, content) {
+    const message = document.createElement('div');
+    message.className = 'career-ai-message career-ai-message-' + role;
+    const text = document.createElement('p');
+    text.className = 'career-ai-answer';
+    text.textContent = content;
+    message.appendChild(text);
+    result.appendChild(message);
+    result.scrollTop = result.scrollHeight;
+    return message;
+}
+
 async function askCareerQuickQuestion(questionType) {
     const prompt = document.getElementById('aiPrompt');
-    if (!prompt) return;
+    const sendButton = document.getElementById('careerAiSendButton');
+    if (!prompt || (sendButton && sendButton.disabled)) return;
 
     const questions = {
         'fresh-graduates': 'What current jobs are suitable for fresh graduates?',
@@ -2784,9 +2799,9 @@ async function askCareerQuickQuestion(questionType) {
         }
         if (!auth.profile.course || !auth.profile.skills) {
             const result = document.getElementById('recommendation-result');
-            result.classList.remove('recommendation-warning');
             result.style.display = 'block';
-            result.textContent = 'Please complete your profile with your course and skills, then try this quick question again.';
+            appendCareerAiMessage(result, 'assistant', 'Please complete your profile with your course and skills, then try this quick question again.');
+            careerChatHistory.push({ role: 'assistant', content: 'Please complete your profile with your course and skills, then try this quick question again.' });
             return;
         }
         question = 'Find current jobs that match my course: ' + auth.profile.course + '. My skills are: ' + auth.profile.skills + '.';
@@ -2856,7 +2871,7 @@ async function checkJobReadiness(job, card) {
     }
 }
 
-function showLocalCareerRecommendations(result, prompt, profile, jobs, error) {
+function showLocalCareerRecommendations(prompt, profile, jobs, error) {
     const ignoredTerms = new Set(['a', 'an', 'and', 'are', 'can', 'for', 'fit', 'fits', 'have', 'i', 'in', 'is', 'me', 'my', 'of', 'the', 'to', 'what', 'with', 'want']);
     const terms = (String(prompt || '') + ' ' + (profile.course || '') + ' ' + (profile.skills || '') + ' ' + (profile.experienceSummary || ''))
         .toLowerCase()
@@ -2876,30 +2891,30 @@ function showLocalCareerRecommendations(result, prompt, profile, jobs, error) {
         return b.score - a.score;
     }).slice(0, 3);
 
-    result.replaceChildren();
+    const response = document.createElement('div');
     const notice = document.createElement('p');
     notice.className = 'career-ai-answer';
     notice.textContent = 'Career AI is unavailable right now (' + (error && error.message || 'connection error') + '). Showing local keyword-based matches instead.';
-    result.appendChild(notice);
+    response.appendChild(notice);
 
     if (!filteredTerms.length) {
         const guidance = document.createElement('p');
         guidance.textContent = 'Add your course or specific skills to your question or profile for relevant matches.';
-        result.appendChild(guidance);
-        return;
+        response.appendChild(guidance);
+        return response;
     }
 
     if (!matches.length) {
         const guidance = document.createElement('p');
         guidance.textContent = 'No current job listings matched those terms. Try adding your course, skills, or a role you are interested in.';
-        result.appendChild(guidance);
-        return;
+        response.appendChild(guidance);
+        return response;
     }
 
     const heading = document.createElement('h4');
     heading.className = 'career-ai-matches-title';
     heading.textContent = 'Local matches from current job listings';
-    result.appendChild(heading);
+    response.appendChild(heading);
     const list = document.createElement('ul');
     list.className = 'career-ai-matches';
     matches.forEach(function(match) {
@@ -2920,16 +2935,17 @@ function showLocalCareerRecommendations(result, prompt, profile, jobs, error) {
         }
         list.appendChild(item);
     });
-    result.appendChild(list);
+    response.appendChild(list);
+    return response;
 }
-
-window.careerChatHistory = window.careerChatHistory || [];
 
 function askCareerAI() {
     const prompt = document.getElementById('aiPrompt');
     const text = prompt ? prompt.value.trim() : '';
     const result = document.getElementById('recommendation-result');
     const sendButton = document.getElementById('careerAiSendButton');
+    const clearButton = document.querySelector('.career-ai-input-row .ai-clear-btn');
+    if (sendButton && sendButton.disabled) return;
     if (!text) {
         if (prompt) prompt.focus();
         return;
@@ -2952,20 +2968,16 @@ function askCareerAI() {
     }).slice(0, 80);
 
     result.classList.remove('recommendation-warning');
-    result.style.display = 'flex';
-    const userMessage = document.createElement('div');
-    userMessage.className = 'career-chat-message career-chat-user';
-    userMessage.textContent = text;
-    result.appendChild(userMessage);
-    const botMessage = document.createElement('div');
-    botMessage.className = 'career-chat-message career-chat-bot';
-    botMessage.textContent = 'Thinking...';
-    result.appendChild(botMessage);
-    result.scrollTop = result.scrollHeight;
+    result.style.display = 'block';
+    careerChatHistory.push({ role: 'user', content: text });
+    appendCareerAiMessage(result, 'user', text);
+    const pendingMessage = appendCareerAiMessage(result, 'assistant', 'Thinking...');
     if (sendButton) {
         sendButton.disabled = true;
         sendButton.textContent = 'Thinking...';
     }
+    if (clearButton) clearButton.disabled = true;
+    if (prompt) prompt.value = '';
 
     let fallbackProfile = {};
     getCareerAiAuth().then(function(auth) {
@@ -2976,7 +2988,7 @@ function askCareerAI() {
         headers: auth.headers,
         body: JSON.stringify({
             prompt: text,
-            history: window.careerChatHistory.slice(-8),
+            history: careerChatHistory.slice(0, -1).slice(-8),
             profile: auth.profile,
             jobs: jobs.map(function(job) {
                 return {
@@ -2994,14 +3006,10 @@ function askCareerAI() {
         const data = await response.json().catch(function() { return {}; });
         if (!response.ok) throw new Error(data.error || 'Career AI is temporarily unavailable.');
 
-        botMessage.replaceChildren();
-        const answer = document.createElement('p');
-        answer.className = 'career-ai-answer';
-        answer.textContent = data.answer || 'I could not form an answer. Please try asking another way.';
-        botMessage.appendChild(answer);
-        window.careerChatHistory.push({ role: 'user', content: text });
-        window.careerChatHistory.push({ role: 'assistant', content: answer.textContent });
-        window.careerChatHistory = window.careerChatHistory.slice(-8);
+        const answerText = data.answer || 'I could not form an answer. Please try asking another way.';
+        const answer = pendingMessage.querySelector('.career-ai-answer');
+        answer.textContent = answerText;
+        careerChatHistory.push({ role: 'assistant', content: answerText });
 
         const matches = Array.isArray(data.recommendations) ? data.recommendations : [];
         const matchItems = matches.filter(function(match) {
@@ -3011,7 +3019,7 @@ function askCareerAI() {
             const heading = document.createElement('h4');
             heading.className = 'career-ai-matches-title';
             heading.textContent = 'Openings to explore';
-            botMessage.appendChild(heading);
+            pendingMessage.appendChild(heading);
 
             const list = document.createElement('ul');
             list.className = 'career-ai-matches';
@@ -3040,19 +3048,21 @@ function askCareerAI() {
                 }
                 list.appendChild(item);
             });
-            botMessage.appendChild(list);
+            pendingMessage.appendChild(list);
         }
         result.scrollTop = result.scrollHeight;
+        document.getElementById('ai').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }).catch(function(error) {
-        botMessage.classList.add('career-chat-error');
-        botMessage.textContent = '';
-        showLocalCareerRecommendations(botMessage, text, fallbackProfile, jobs, error);
+        const localResponse = showLocalCareerRecommendations(text, fallbackProfile, jobs, error);
+        pendingMessage.replaceChildren(localResponse);
+        careerChatHistory.push({ role: 'assistant', content: 'Career AI is unavailable. Showing local keyword-based matches instead.' });
         result.scrollTop = result.scrollHeight;
     }).finally(function() {
         if (sendButton) {
             sendButton.disabled = false;
             sendButton.textContent = 'Send';
         }
+        if (clearButton) clearButton.disabled = false;
     });
 }
 
@@ -3081,10 +3091,11 @@ function clearRecommendation() {
     const prompt = document.getElementById('aiPrompt');
     if (prompt) prompt.value = '';
     const result = document.getElementById('recommendation-result');
+    if (!result) return;
     result.style.display = 'none';
     result.replaceChildren();
     result.classList.remove('recommendation-warning');
-    window.careerChatHistory = [];
+    careerChatHistory = [];
 }
 
 let interviewPracticeState = null;
